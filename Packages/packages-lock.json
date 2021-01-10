@@ -1,5 +1,54 @@
 {
   "dependencies": {
+    "com.bigeti.audio-manager": {
+      "version": "https://github.com/BigETI/UnityAudioManager.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "67ec5e827a107b40772f84e256f06750923f7c83"
+    },
+    "com.bigeti.save-game": {
+      "version": "https://github.com/BigETI/UnitySaveGame.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a85dd2868471b53f9b3ab3645c2c39d8f4fce1c8"
+    },
+    "com.bigeti.scene-loader-manager": {
+      "version": "https://github.com/BigETI/UnitySceneLoaderManager.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ae9c2279be14b55511daacd4c0f6dc248ed0a5df"
+    },
+    "com.bigeti.selection-cursor-ui": {
+      "version": "https://github.com/BigETI/SelectionCursorUI.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d80f12a14a0e6a05cf9bc86bb2795c1c01eaf619"
+    },
+    "com.bigeti.timing": {
+      "version": "https://github.com/BigETI/UnityTiming.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a958207e245ca79bfa1eb3027f2e72ff32315d94"
+    },
+    "com.bigeti.translator": {
+      "version": "https://github.com/BigETI/UnityTranslator.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "075e788943fefaadb6f7448f2570b4cc094a850c"
+    },
+    "com.bigeti.translator.textmeshpro": {
+      "version": "https://github.com/BigETI/UnityTMProTranslator.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "3177cc6038a32b3ab3448d553d48c6e3c90908bc"
+    },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
       "depth": 1,
@@ -9,6 +58,13 @@
     },
     "com.unity.ide.visualstudio": {
       "version": "2.0.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.inputsystem": {
+      "version": "1.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -142,6 +198,27 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {}
+    },
+    "com.unity.modules.uielements": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.uielementsnative": "1.0.0"
+      }
+    },
+    "com.unity.modules.uielementsnative": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
     }
   }
 }
