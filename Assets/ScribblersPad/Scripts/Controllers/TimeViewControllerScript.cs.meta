@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8352ddfbc70f7b847a0ca04ba1be0b45
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - currentTimeInSecondsStringTranslation: {instanceID: 0}
+  - currentTimeInSecondsStringFormatStringTranslation: {fileID: 11400000, guid: 1608a79d15b9f5140b220119365ee1d3, type: 2}
+  - currentTimeText: {instanceID: 0}
+  - timeProgressImage: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

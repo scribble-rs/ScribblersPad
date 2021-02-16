@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d2ab1de72c3e2d94bb2372f4d8f5cdd8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - playerListElementAsset: {fileID: 7061747852132891824, guid: 443b9b0e25bc2834b94aff3875049474, type: 3}
+  - ownPlayerListElementAsset: {fileID: 5423155981695739291, guid: 3085c38230657e948ab9f21816da877b, type: 3}
+  - verticalLayoutGroup: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
