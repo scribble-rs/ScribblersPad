@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 04b8c2b24b13f08418c3ff0772eb7b93
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - messageChatBoxElementAsset: {fileID: 4919795192106389986, guid: fc07fab2b720bc64cadbf7231967e7e2, type: 3}
+  - ownMessageChatBoxElementAsset: {fileID: 1368441042097876863, guid: 5450d017ff379d04e8a67df3ce646226, type: 3}
+  - nonGuessingPlayerMessageChatBoxElementAsset: {fileID: 8999588022964631295, guid: 9aeb91d85ce038843b5adf07eda67967, type: 3}
+  - ownNonGuessingPlayerMessageChatBoxElementAsset: {fileID: 8480893624083616692, guid: 664b78cd83b303b43bdc678cf3a14c6e, type: 3}
+  - correctlyGuessedChatBoxElementAsset: {fileID: 4232035771713968090, guid: eedc859c4799fe343b34637575bc2226, type: 3}
+  - ownCorrectlyGuessedChatBoxElementAsset: {fileID: 312101080469292611, guid: d42f5cd6d2494d04f82a48c483ad6a96, type: 3}
+  - systemMessageChatBoxElementAsset: {fileID: 6471354768621618525, guid: 6cd64cc096b676149b2f0b19ba51d5c9, type: 3}
+  - chatBoxElementParentRectangleTransform: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

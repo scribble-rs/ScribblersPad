@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.bigeti.audio-manager": "https://github.com/BigETI/UnityAudioManager.git",
+    "com.bigeti.parallel": "https://github.com/BigETI/UnityParallel.git",
     "com.bigeti.save-game": "https://github.com/BigETI/UnitySaveGame.git",
     "com.bigeti.scene-loader-manager": "https://github.com/BigETI/UnitySceneLoaderManager.git",
     "com.bigeti.selection-cursor-ui": "https://github.com/BigETI/SelectionCursorUI.git",
@@ -8,8 +9,8 @@
     "com.bigeti.translator": "https://github.com/BigETI/UnityTranslator.git",
     "com.bigeti.translator.textmeshpro": "https://github.com/BigETI/UnityTMProTranslator.git",
     "com.unity.ide.visualstudio": "2.0.5",
-    "com.unity.inputsystem": "1.0.1",
-    "com.unity.render-pipelines.universal": "10.2.2",
+    "com.unity.inputsystem": "1.0.2",
+    "com.unity.render-pipelines.universal": "10.3.1",
     "com.unity.test-framework": "1.1.20",
     "com.unity.textmeshpro": "3.0.3",
     "com.unity.ugui": "1.0.0",

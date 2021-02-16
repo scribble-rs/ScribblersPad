@@ -1,0 +1,22 @@
+{
+    "name": "ScribblersPad",
+    "rootNamespace": "",
+    "references": [
+        "GUID:41b78ffaa41a2cf4fa9cc560b66e1bdc",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:cec3015e6d5c9f04db02db9509d532fd",
+        "GUID:bafc72c464cf19546bfa87f6a262b38a",
+        "GUID:42b54b3e5144a5b409f3058ee42fc1e9",
+        "GUID:fcb100b7b66187e469de3637a27ae794"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

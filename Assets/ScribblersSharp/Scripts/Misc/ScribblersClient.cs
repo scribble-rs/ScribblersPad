@@ -2,6 +2,7 @@
 using ScribblersSharp.Data;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Net;
 using System.Net.Http;
 using System.Net.WebSockets;
@@ -118,14 +119,14 @@ namespace ScribblersSharp
                 { "username", username }
             });
             EnterLobbyResponseData response = response_with_user_session_cookie.Response;
-            if (response != null)
+            if ((response != null) && response.IsValid)
             {
                 ClientWebSocket client_web_socket = new ClientWebSocket();
                 client_web_socket.Options.Cookies = cookieContainer;
                 await client_web_socket.ConnectAsync(new Uri(web_socket_host_uri, $"/v1/ws?lobby_id={ Uri.EscapeUriString(response.LobbyID) }"), default);
                 if (client_web_socket.State == WebSocketState.Open)
                 {
-                    ret = new Lobby(client_web_socket, username, response.LobbyID, response.DrawingBoardBaseWidth, response.DrawingBoardBaseHeight);
+                    ret = new Lobby(client_web_socket, response.LobbyID, response.DrawingBoardBaseWidth, response.DrawingBoardBaseHeight, response.MinimalBrushSize, response.MaximalBrushSize, response.SuggestedBrushSizes, Color.FromArgb(0xFF, response.CanvasColor[0], response.CanvasColor[1], response.CanvasColor[2]));
                 }
                 else
                 {
@@ -155,9 +156,9 @@ namespace ScribblersSharp
             {
                 throw new ArgumentNullException(nameof(username));
             }
-            if ((username.Length < Rules.minimalUsernameLength) || (username.Length > Rules.maximalUsernameLength))
+            if (username.Length > Rules.maximalUsernameLength)
             {
-                throw new ArgumentException($"Username must be between { Rules.minimalUsernameLength } and { Rules.maximalUsernameLength } characters.");
+                throw new ArgumentException($"Username must be atleast { Rules.maximalUsernameLength } characters long.");
             }
             if ((maximalPlayers < Rules.minimalPlayers) || (maximalPlayers > Rules.maximalPlayers))
             {
@@ -187,11 +188,18 @@ namespace ScribblersSharp
             Uri http_host_uri = new Uri($"{ httpProtocol }://{ Host }");
             Uri web_socket_host_uri = new Uri($"{ webSocketProtocol }://{ Host }");
             string[] custom_words = new string[customWords.Count];
+#if SCRIBBLERS_SHARP_NO_PARALLEL_LOOPS
+            for (int index = 0; index < custom_words.Length; index++)
+#else
             Parallel.For(0, custom_words.Length, (index) =>
+#endif
             {
                 string custom_word = customWords[index];
                 custom_words[index] = custom_word ?? throw new ArgumentNullException(nameof(custom_word));
-            });
+            }
+#if !SCRIBBLERS_SHARP_NO_PARALLEL_LOOPS
+            );
+#endif
             StringBuilder custom_words_builder = new StringBuilder();
             bool first = true;
             foreach (string custom_word in customWords)
@@ -221,14 +229,14 @@ namespace ScribblersSharp
             });
             custom_words_builder.Clear();
             CreateLobbyResponseData response = response_with_user_session_cookie.Response;
-            if (response != null)
+            if ((response != null) && response.IsValid)
             {
                 ClientWebSocket client_web_socket = new ClientWebSocket();
                 client_web_socket.Options.Cookies = cookieContainer;
                 await client_web_socket.ConnectAsync(new Uri(web_socket_host_uri, $"/v1/ws?lobby_id={ Uri.EscapeUriString(response.LobbyID) }"), default);
                 if (client_web_socket.State == WebSocketState.Open)
                 {
-                    ret = new Lobby(client_web_socket, username, response.LobbyID, response.DrawingBoardBaseWidth, response.DrawingBoardBaseHeight);
+                    ret = new Lobby(client_web_socket, response.LobbyID, response.DrawingBoardBaseWidth, response.DrawingBoardBaseHeight, response.MinimalBrushSize, response.MaximalBrushSize, response.SuggestedBrushSizes, Color.FromArgb(0xFF, response.CanvasColor[0], response.CanvasColor[1], response.CanvasColor[2]));
                 }
                 else
                 {
