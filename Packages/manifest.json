@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "com.bigeti.audio-manager": "https://github.com/BigETI/UnityAudioManager.git",
+    "com.bigeti.dialog": "https://github.com/BigETI/UnityDialog.git",
+    "com.bigeti.dialog.textmeshpro": "https://github.com/BigETI/UnityTMProDialog.git",
     "com.bigeti.parallel": "https://github.com/BigETI/UnityParallel.git",
     "com.bigeti.save-game": "https://github.com/BigETI/UnitySaveGame.git",
     "com.bigeti.scene-loader-manager": "https://github.com/BigETI/UnitySceneLoaderManager.git",

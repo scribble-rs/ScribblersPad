@@ -1,4 +1,5 @@
-﻿/// <summary>
+﻿using UnityTranslator.Objects;
+/// <summary>
 /// Scribble.rs Pad namespace
 /// </summary>
 namespace ScribblersPad
@@ -8,6 +9,16 @@ namespace ScribblersPad
     /// </summary>
     public interface IGameMenuController : IBehaviour
     {
+        /// <summary>
+        /// Exit game question title string translation
+        /// </summary>
+        StringTranslationObjectScript ExitGameQuestionTitleStringTranslation { get; set; }
+
+        /// <summary>
+        /// Exit game question message string translation
+        /// </summary>
+        StringTranslationObjectScript ExitGameQuestionMessageStringTranslation { get; set; }
+
         /// <summary>
         /// Is showing game menu
         /// </summary>
@@ -26,6 +37,6 @@ namespace ScribblersPad
         /// <summary>
         /// Shows main menu
         /// </summary>
-        void ShowMainMenu();
+        void RequestExitingGame();
     }
 }

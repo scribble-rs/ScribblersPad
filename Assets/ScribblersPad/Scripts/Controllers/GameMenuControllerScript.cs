@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using UnityDialog;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnitySceneLoaderManager;
+using UnityTranslator.Objects;
 
 /// <summary>
 /// Scribble.rs Pad controllers namespace
@@ -13,6 +15,18 @@ namespace ScribblersPad.Controllers
     /// </summary>
     public class GameMenuControllerScript : MonoBehaviour, IGameMenuController
     {
+        /// <summary>
+        /// Exit game question title string translation
+        /// </summary>
+        [SerializeField]
+        private StringTranslationObjectScript exitGameQuestionTitleStringTranslation = default;
+
+        /// <summary>
+        /// Exit game question message string translation
+        /// </summary>
+        [SerializeField]
+        private StringTranslationObjectScript exitGameQuestionMessageStringTranslation = default;
+
         /// <summary>
         /// Gets invoked when game menu has been shown
         /// </summary>
@@ -34,6 +48,24 @@ namespace ScribblersPad.Controllers
         /// Is pressing escape key
         /// </summary>
         private bool isPressingEscapeKey;
+
+        /// <summary>
+        /// Exit game question title string translation
+        /// </summary>
+        public StringTranslationObjectScript ExitGameQuestionTitleStringTranslation
+        {
+            get => exitGameQuestionTitleStringTranslation;
+            set => exitGameQuestionTitleStringTranslation = value;
+        }
+
+        /// <summary>
+        /// Exit game question message string translation
+        /// </summary>
+        public StringTranslationObjectScript ExitGameQuestionMessageStringTranslation
+        {
+            get => exitGameQuestionMessageStringTranslation;
+            set => exitGameQuestionMessageStringTranslation = value;
+        }
 
         /// <summary>
         /// Is showing game menu
@@ -77,12 +109,18 @@ namespace ScribblersPad.Controllers
         public event GameMenuHiddenDelegate OnGameMenuHidden;
 
         /// <summary>
-        /// Shows main menu
+        /// Requests exiting game
         /// </summary>
-        public void ShowMainMenu()
+        public void RequestExitingGame()
         {
-            IsShowingGameMenu = false;
-            SceneLoaderManager.LoadScene("MainMenuScene");
+            Dialog.Show((exitGameQuestionTitleStringTranslation == null) ? string.Empty : exitGameQuestionTitleStringTranslation.ToString(), (exitGameQuestionMessageStringTranslation == null) ? string.Empty : exitGameQuestionMessageStringTranslation.ToString(), EDialogType.Information, EDialogButtons.YesNo, (e) =>
+            {
+                if (e.DialogResponse == EDialogResponse.Yes)
+                {
+                    IsShowingGameMenu = false;
+                    SceneLoaderManager.LoadScene("MainMenuScene");
+                }
+            });
         }
 
         /// <summary>

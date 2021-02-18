@@ -573,6 +573,19 @@ namespace ScribblersPad.Managers
         public Task SendStartGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendStartGameMessageAsync();
 
         /// <summary>
+        /// Sends a "name-change" game message asynchronously
+        /// </summary>
+        /// <param name="newUsername">New username</param>
+        /// <returns>Task</returns>
+        public Task SendNameChangeGameMessageAsync(string newUsername) => (Lobby == null) ? Task.CompletedTask : Lobby.SendNameChangeGameMessageAsync(newUsername);
+
+        /// <summary>
+        /// Sends a "request-drawing" game message asynchronously
+        /// </summary>
+        /// <returns>Task</returns>
+        public Task SendRequestDrawingGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendRequestDrawingGameMessageAsync();
+
+        /// <summary>
         /// Sends a "clear-drawing-board" game message asynchronously
         /// </summary>
         /// <returns>Task</returns>
@@ -605,6 +618,13 @@ namespace ScribblersPad.Managers
         /// <param name="index">Word index</param>
         /// <returns>Task</returns>
         public Task SendChooseWordGameMessageAsync(uint index) => (Lobby == null) ? Task.CompletedTask : Lobby.SendChooseWordGameMessageAsync(index);
+
+        /// <summary>
+        /// Sends a "kick-vote" game message asynchronously
+        /// </summary>
+        /// <param name="toKickPlayer">To kick player</param>
+        /// <returns></returns>
+        public Task SendKickVoteAsync(IPlayer toKickPlayer) => (Lobby == null) ? Task.CompletedTask : Lobby.SendKickVoteAsync(toKickPlayer);
 
         /// <summary>
         /// Sends a "message" game message asynchronously
