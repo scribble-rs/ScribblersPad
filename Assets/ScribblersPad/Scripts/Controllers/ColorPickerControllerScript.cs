@@ -227,7 +227,20 @@ namespace ScribblersPad.Controllers
             DrawingToolInputControllerScript drawing_tool_input_controller = FindObjectOfType<DrawingToolInputControllerScript>(true);
             if (drawing_tool_input_controller)
             {
-                drawing_tool_input_controller.DrawingToolColor = color;
+                Color32 new_color = color;
+                if
+                (
+                    (drawing_tool_input_controller.DrawingToolColor.r != new_color.r) ||
+                    (drawing_tool_input_controller.DrawingToolColor.g != new_color.g) ||
+                    (drawing_tool_input_controller.DrawingToolColor.b != new_color.b)
+                )
+                {
+                    drawing_tool_input_controller.DrawingToolColor = new_color;
+                    if (drawing_tool_input_controller.DrawingTool == EDrawingTool.Eraser)
+                    {
+                        drawing_tool_input_controller.DrawingTool = EDrawingTool.Pen;
+                    }
+                }
             }
             else
             {
