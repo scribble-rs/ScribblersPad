@@ -209,6 +209,19 @@ namespace ScribblersPad
         Task SendStartGameMessageAsync();
 
         /// <summary>
+        /// Sends a "name-change" game message asynchronously
+        /// </summary>
+        /// <param name="newUsername">New username</param>
+        /// <returns>Task</returns>
+        Task SendNameChangeGameMessageAsync(string newUsername);
+
+        /// <summary>
+        /// Sends a "request-drawing" game message asynchronously
+        /// </summary>
+        /// <returns>Task</returns>
+        Task SendRequestDrawingGameMessageAsync();
+
+        /// <summary>
         /// Sends a "clear-drawing-board" game message asynchronously
         /// </summary>
         /// <returns>Task</returns>
@@ -241,6 +254,13 @@ namespace ScribblersPad
         /// <param name="index">Word index</param>
         /// <returns>Task</returns>
         Task SendChooseWordGameMessageAsync(uint index);
+
+        /// <summary>
+        /// Sends a "kick-vote" game message asynchronously
+        /// </summary>
+        /// <param name="toKickPlayer">To kick player</param>
+        /// <returns></returns>
+        Task SendKickVoteAsync(IPlayer toKickPlayer);
 
         /// <summary>
         /// Sends a "message" game message asynchronously
