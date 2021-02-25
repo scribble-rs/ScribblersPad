@@ -1,4 +1,7 @@
-﻿/// <summary>
+﻿using Newtonsoft.Json;
+using ScribblersSharp.JSONConverters;
+
+/// <summary>
 /// Scribble.rs ♯ namespace
 /// </summary>
 namespace ScribblersSharp
@@ -6,27 +9,28 @@ namespace ScribblersSharp
     /// <summary>
     /// Language enumerator
     /// </summary>
+    [JsonConverter(typeof(LanguageJSONConverter))]
     public enum ELanguage
     {
         /// <summary>
-        /// Unknown language
+        /// Invalid language
         /// </summary>
-        Unknown,
+        Invalid,
 
         /// <summary>
-        /// English
+        /// Dutch
         /// </summary>
-        English,
+        Dutch,
 
         /// <summary>
-        /// Italian
+        /// English (GB)
         /// </summary>
-        Italian,
+        EnglishGB,
 
         /// <summary>
-        /// German
+        /// English (US)
         /// </summary>
-        German,
+        EnglishUS,
 
         /// <summary>
         /// French
@@ -34,8 +38,13 @@ namespace ScribblersSharp
         French,
 
         /// <summary>
-        /// Dutch
+        /// German
         /// </summary>
-        Dutch
+        German,
+
+        /// <summary>
+        /// Italian
+        /// </summary>
+        Italian
     }
 }

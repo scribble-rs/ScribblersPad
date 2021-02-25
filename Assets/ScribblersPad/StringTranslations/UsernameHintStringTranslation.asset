@@ -10,16 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 633ca26d071a54346aec853814800eb0, type: 3}
-  m_Name: CurrentTimeInSecondsFormatStringTranslation
+  m_Name: UsernameHintStringTranslation
   m_EditorClassIdentifier: 
   stringTranslation:
     strings:
-    - stringValue: 'Time:
-
-        {0} s'
+    - stringValue: Username. Leave this blank to get a random name...
       language: 10
-    - stringValue: 'Zeit:
-
-        {0} s'
+    - stringValue: "Benutzername. Lasse dieses Feld leer um einen zuf\xE4lligen Namen
+        zu bekommen..."
       language: 15
   comment: 

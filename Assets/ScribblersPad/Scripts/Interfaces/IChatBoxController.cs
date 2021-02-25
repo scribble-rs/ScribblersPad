@@ -37,6 +37,11 @@ namespace ScribblersPad
         GameObject OwnNonGuessingPlayerMessageChatBoxElementAsset { get; set; }
 
         /// <summary>
+        /// Closely guessed chat box element asset
+        /// </summary>
+        GameObject CloselyGuessedChatBoxElementAsset { get; set; }
+
+        /// <summary>
         /// Correctly guessed chat box element asset
         /// </summary>
         GameObject CorrectlyGuessedChatBoxElementAsset { get; set; }
@@ -75,6 +80,11 @@ namespace ScribblersPad
         /// Gets invoked when "system-message" game message has been received
         /// </summary>
         event SystemMessageGameMessageReceivedDelegate OnSystemMessageGameMessageReceived;
+
+        /// <summary>
+        /// Gets invoked when "close-guess" game message has been received
+        /// </summary>
+        event CloseGuessGameMessageReceivedDelegate OnCloseGuessGameMessageReceived;
 
         /// <summary>
         /// Gets invoked when "correct-guess" game message has been received

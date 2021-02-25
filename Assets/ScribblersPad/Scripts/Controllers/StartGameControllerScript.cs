@@ -7,7 +7,6 @@ using UnityEngine.Events;
 /// </summary>
 namespace ScribblersPad.Controllers
 {
-    // TODO: Add code documentation
     /// <summary>
     /// A class that describes a start game controller script
     /// </summary>
@@ -38,8 +37,7 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void ScribblersClientManagerReadyGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerReadyGameMessageReceivedEvent()
         {
             if ((ScribblersClientManager.GameState == EGameState.Unstarted) && (ScribblersClientManager.MyPlayer.ID == ScribblersClientManager.Owner.ID))
             {
@@ -47,13 +45,13 @@ namespace ScribblersPad.Controllers
                 {
                     onBeforeOwningGameStarted.Invoke();
                 }
-                OnBeforeOwningGameStarted?.Invoke(lobby);
+                OnBeforeOwningGameStarted?.Invoke();
             }
             if (onReadyGameMessageReceived != null)
             {
                 onReadyGameMessageReceived.Invoke();
             }
-            OnReadyGameMessageReceived?.Invoke(lobby);
+            OnReadyGameMessageReceived?.Invoke();
         }
 
         /// <summary>
@@ -66,6 +64,9 @@ namespace ScribblersPad.Controllers
         /// </summary>
         protected override void UnsubscribeScribblersClientEvents() => ScribblersClientManager.OnReadyGameMessageReceived -= ScribblersClientManagerReadyGameMessageReceivedEvent;
 
+        /// <summary>
+        /// Starts game
+        /// </summary>
         public void StartGame() => ScribblersClientManager.SendStartGameMessageAsync();
     }
 }

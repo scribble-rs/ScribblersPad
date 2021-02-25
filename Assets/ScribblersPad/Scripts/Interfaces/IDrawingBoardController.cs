@@ -13,6 +13,11 @@ namespace ScribblersPad
     public interface IDrawingBoardController : IScribblersClientController
     {
         /// <summary>
+        /// Minimal drawing frame time
+        /// </summary>
+        long MinimalDrawingFrameTime { get; set; }
+
+        /// <summary>
         /// Is my player allowed to drawing right now
         /// </summary>
         bool IsPlayerDrawing { get; }

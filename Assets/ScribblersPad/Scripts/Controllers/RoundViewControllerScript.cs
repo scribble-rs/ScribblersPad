@@ -76,29 +76,27 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void ScribblersClientManagerReadyGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerReadyGameMessageReceivedEvent()
         {
-            UpdateVisuals(lobby);
+            UpdateVisuals(ScribblersClientManager.Lobby);
             if (onReadyGameMessageReceived != null)
             {
                 onReadyGameMessageReceived.Invoke();
             }
-            OnReadyGameMessageReceived?.Invoke(lobby);
+            OnReadyGameMessageReceived?.Invoke();
         }
 
         /// <summary>
         /// Gets invoked when a "next-turn" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent()
         {
-            UpdateVisuals(lobby);
+            UpdateVisuals(ScribblersClientManager.Lobby);
             if (onNextTurnGameMessageReceived != null)
             {
                 onNextTurnGameMessageReceived.Invoke();
             }
-            OnNextTurnGameMessageReceived?.Invoke(lobby);
+            OnNextTurnGameMessageReceived?.Invoke();
         }
 
         /// <summary>

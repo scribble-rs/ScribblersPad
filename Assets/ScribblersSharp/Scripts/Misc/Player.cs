@@ -51,7 +51,7 @@ namespace ScribblersSharp
         public bool IsValid => 
             (ID != null) &&
             (Name != null) &&
-            (State != EPlayerState.Unknown);
+            (State != EPlayerState.Invalid);
 
         /// <summary>
         /// Constructor
@@ -80,7 +80,7 @@ namespace ScribblersSharp
         /// <param name="newState">New state</param>
         public void UpdateInternally(string newName, uint newScore, bool newIsConnectedState, uint newLastScore, uint newRank, EPlayerState newState)
         {
-            if (newState == EPlayerState.Unknown)
+            if (newState == EPlayerState.Invalid)
             {
                 throw new ArgumentException("Player state is unknown.", nameof(newState));
             }
@@ -91,5 +91,11 @@ namespace ScribblersSharp
             Rank = newRank;
             State = newState;
         }
+
+        /// <summary>
+        /// Updates player name internally
+        /// </summary>
+        /// <param name="newName">New player name</param>
+        public void UpdateNameInternally(string newName) => Name = newName ?? throw new ArgumentNullException(nameof(newName));
     }
 }

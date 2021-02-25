@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 2477676233134218214}
   - component: {fileID: 4130979830034001223}
   - component: {fileID: 5220294597448542949}
+  - component: {fileID: 5190669200171294587}
   m_Layer: 5
   m_Name: MuteButtonObject
   m_TagString: Untagged
@@ -274,3 +275,32 @@ MonoBehaviour:
   onUnmuted:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5190669200171294587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741150074754453769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4130979830034001223}
+          m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
+          m_MethodName: Select
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2

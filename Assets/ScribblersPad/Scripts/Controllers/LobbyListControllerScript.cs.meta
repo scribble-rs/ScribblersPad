@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: e5122ce363771d14bbb703f4e27fa9ec
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - lobbyPanelAsset: {fileID: 3990832038674000508, guid: 5ba395e1680a6714ebf0e7aeeb226895, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScribblersSharp;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -15,13 +16,24 @@ namespace ScribblersPad.Objects
         /// <summary>
         /// Default host
         /// </summary>
-        public static readonly string defaultHost = "scribble.rs";
+        public static readonly string defaultHost = "scribblers-official.herokuapp.com";
+
+        /// <summary>
+        /// Default lobby language
+        /// </summary>
+        public static readonly ELanguage defaultLobbyLanguage = ELanguage.EnglishUS;
 
         /// <summary>
         /// Host
         /// </summary>
         [SerializeField]
         private string host = defaultHost;
+
+        /// <summary>
+        /// Lobby language
+        /// </summary>
+        [SerializeField]
+        private ELanguage lobbyLanguage = defaultLobbyLanguage;
 
         /// <summary>
         /// Host
@@ -33,8 +45,28 @@ namespace ScribblersPad.Objects
         }
 
         /// <summary>
+        /// Lobby language
+        /// </summary>
+        public ELanguage LobbyLanguage
+        {
+            get => (lobbyLanguage == ELanguage.Invalid) ? defaultLobbyLanguage : lobbyLanguage;
+            set
+            {
+                if (value == ELanguage.Invalid)
+                {
+                    throw new ArgumentException("Lobby language can't be invalid.", nameof(value));
+                }
+                lobbyLanguage = value;
+            }
+        }
+
+        /// <summary>
         /// Gets invoked when script gets validated
         /// </summary>
-        private void OnValidate() => host ??= defaultHost;
+        private void OnValidate()
+        {
+            host ??= defaultHost;
+            lobbyLanguage = (lobbyLanguage == ELanguage.Invalid) ? defaultLobbyLanguage : lobbyLanguage;
+        }
     }
 }

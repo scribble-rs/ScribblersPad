@@ -18,6 +18,12 @@ namespace ScribblersPad.Controllers
     public class DrawingBoardControllerScript : AScribblersClientControllerScript, IDrawingBoardController
     {
         /// <summary>
+        /// Minimal drawing frame time
+        /// </summary>
+        [SerializeField]
+        private long minimalDrawingFrameTime = 1000L / 60L;
+
+        /// <summary>
         /// Gets invoked when a line has been drawn
         /// </summary>
         [SerializeField]
@@ -92,9 +98,9 @@ namespace ScribblersPad.Controllers
         private Color32[] bitmap;
 
         /// <summary>
-        /// Is my player allowed to drawing right now
+        /// Update tick stopwatch
         /// </summary>
-        public bool IsPlayerDrawing => ScribblersClientManager && ScribblersClientManager.IsPlayerAllowedToDraw;
+        private System.Diagnostics.Stopwatch updateTickStopwatch = new System.Diagnostics.Stopwatch();
 
         /// <summary>
         /// Bitmap
@@ -114,6 +120,20 @@ namespace ScribblersPad.Controllers
                 return bitmap;
             }
         }
+
+        /// <summary>
+        /// Minimal drawing frame time
+        /// </summary>
+        public long MinimalDrawingFrameTime
+        {
+            get => minimalDrawingFrameTime;
+            set => minimalDrawingFrameTime = value;
+        }
+
+        /// <summary>
+        /// Is my player allowed to drawing right now
+        /// </summary>
+        public bool IsPlayerDrawing => ScribblersClientManager && ScribblersClientManager.IsPlayerAllowedToDraw;
 
         /// <summary>
         /// Raw image
@@ -268,8 +288,6 @@ namespace ScribblersPad.Controllers
                         bitmap[position.x + (texture_size.x * position.y)] = color;
                     }
                 });
-                texture.SetPixels32(bitmap);
-                texture.Apply();
             }
             if (onLineDrawn != null)
             {
@@ -360,8 +378,6 @@ namespace ScribblersPad.Controllers
                         }
                     }
                 }
-                texture.SetPixels32(bitmap);
-                texture.Apply();
             }
             if (onDrawingBoardFilled != null)
             {
@@ -413,12 +429,11 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void ScribblersClientManagerReadyGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerReadyGameMessageReceivedEvent()
         {
             UpdateTexture();
             ClearInternally();
-            foreach (ScribblersSharp.IDrawCommand draw_command in lobby.CurrentDrawing)
+            foreach (ScribblersSharp.IDrawCommand draw_command in ScribblersClientManager.Lobby.CurrentDrawing)
             {
                 inputDrawCommandQueue.Enqueue(new DrawCommand(draw_command.Type, new Vector2(draw_command.FromX, draw_command.FromY), new Vector2(draw_command.ToX, draw_command.ToY), new Color32(draw_command.Color.R, draw_command.Color.G, draw_command.Color.B, 0xFF), draw_command.LineWidth));
             }
@@ -426,21 +441,20 @@ namespace ScribblersPad.Controllers
             {
                 onReadyGameMessageReceived.Invoke();
             }
-            OnReadyGameMessageReceived?.Invoke(lobby);
+            OnReadyGameMessageReceived?.Invoke();
         }
 
         /// <summary>
         /// Gets invoked when a "next-turn" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent()
         {
             ClearInternally();
             if (onNextTurnGameMessageReceived != null)
             {
                 onNextTurnGameMessageReceived.Invoke();
             }
-            OnNextTurnGameMessageReceived?.Invoke(lobby);
+            OnNextTurnGameMessageReceived?.Invoke();
         }
 
         /// <summary>
@@ -585,36 +599,53 @@ namespace ScribblersPad.Controllers
         /// </summary>
         public void ProcessNextDrawCommandInQueue()
         {
+            bool is_drawing = (inputDrawCommandQueue.Count > 0) || (outputDrawCommandQueue.Count > 0);
+            long drawing_time = 0L;
             UpdateTexture();
             if (RawImage)
             {
                 RawImage.texture = texture;
             }
-            if (inputDrawCommandQueue.Count > 0)
+            if (is_drawing)
             {
-                DrawCommand draw_command = inputDrawCommandQueue.Dequeue();
-                switch (draw_command.Type)
+                while (is_drawing)
                 {
-                    case EDrawCommandType.Fill:
-                        FillInternally(draw_command.From, draw_command.Color);
-                        break;
-                    case EDrawCommandType.Line:
-                        DrawLineInternally(draw_command.From, draw_command.To, draw_command.Color, draw_command.LineWidth);
-                        break;
+                    is_drawing = false;
+                    updateTickStopwatch.Start();
+                    if (inputDrawCommandQueue.Count > 0)
+                    {
+                        DrawCommand draw_command = inputDrawCommandQueue.Dequeue();
+                        switch (draw_command.Type)
+                        {
+                            case EDrawCommandType.Fill:
+                                FillInternally(draw_command.From, draw_command.Color);
+                                break;
+                            case EDrawCommandType.Line:
+                                DrawLineInternally(draw_command.From, draw_command.To, draw_command.Color, draw_command.LineWidth);
+                                break;
+                        }
+                        is_drawing = inputDrawCommandQueue.Count > 0;
+                    }
+                    if (outputDrawCommandQueue.Count > 0)
+                    {
+                        DrawCommand draw_command = outputDrawCommandQueue.Dequeue();
+                        switch (draw_command.Type)
+                        {
+                            case EDrawCommandType.Fill:
+                                ScribblersClientManager.SendFillGameMessageAsync(draw_command.From.x, draw_command.From.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b));
+                                break;
+                            case EDrawCommandType.Line:
+                                ScribblersClientManager.SendLineGameMessageAsync(draw_command.From.x, draw_command.From.y, draw_command.To.x, draw_command.To.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b), draw_command.LineWidth);
+                                break;
+                        }
+                        is_drawing = is_drawing || (outputDrawCommandQueue.Count > 0);
+                    }
+                    updateTickStopwatch.Stop();
+                    drawing_time += updateTickStopwatch.ElapsedMilliseconds;
+                    is_drawing = is_drawing && (drawing_time < minimalDrawingFrameTime);
                 }
-            }
-            if (outputDrawCommandQueue.Count > 0)
-            {
-                DrawCommand draw_command = outputDrawCommandQueue.Dequeue();
-                switch (draw_command.Type)
-                {
-                    case EDrawCommandType.Fill:
-                        ScribblersClientManager.SendFillGameMessageAsync(draw_command.From.x, draw_command.From.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b));
-                        break;
-                    case EDrawCommandType.Line:
-                        ScribblersClientManager.SendLineGameMessageAsync(draw_command.From.x, draw_command.From.y, draw_command.To.x, draw_command.To.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b), draw_command.LineWidth);
-                        break;
-                }
+                texture.SetPixels32(bitmap);
+                texture.Apply();
             }
         }
 
