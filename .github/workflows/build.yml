@@ -1,0 +1,33 @@
+name: Build Scribble.rs Pad
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Setup Unity
+        uses: kuler90/setup-unity@v1
+        with:
+          unity-modules: android
+      - name: Activate Unity
+        uses: kuler90/activate-unity@v1
+        with:
+          unity-username: ${{ secrets.UNITY_USERNAME }}
+          unity-password: ${{ secrets.UNITY_PASSWORD }}
+          unity-authenticator-key: ${{ secrets.UNITY_AUTHENTICATOR_KEY }}
+      - name: Build Unity
+        uses: kuler90/build-unity@v1
+        with:
+          build-target: Android
+          build-path: ./ScribblersPad.apk
+      - name: Upload build
+        uses: actions/upload-artifact@v2
+        with:
+          name: ScribblersPad.apk
+          path: ./ScribblersPad.apk
