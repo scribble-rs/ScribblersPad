@@ -45,6 +45,12 @@ namespace ScribblersPad.Controllers
         private GameObject ownNonGuessingPlayerMessageChatBoxElementAsset = default;
 
         /// <summary>
+        /// Closely guessed chat box element asset
+        /// </summary>
+        [SerializeField]
+        private GameObject closelyGuessedChatBoxElementAsset = default;
+
+        /// <summary>
         /// Correctly guessed chat box element asset
         /// </summary>
         [SerializeField]
@@ -85,6 +91,12 @@ namespace ScribblersPad.Controllers
         /// </summary>
         [SerializeField]
         private UnityEvent onSystemMessageGameMessageReceived = default;
+
+        /// <summary>
+        /// Gets invoked when "close-guess" game message has been received
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onCloseGuessGameMessageReceived = default;
 
         /// <summary>
         /// Gets invoked when "correct-guess" game message has been received
@@ -148,6 +160,15 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
+        /// Closely guessed chat box element asset
+        /// </summary>
+        public GameObject CloselyGuessedChatBoxElementAsset
+        {
+            get => closelyGuessedChatBoxElementAsset;
+            set => closelyGuessedChatBoxElementAsset = value;
+        }
+
+        /// <summary>
         /// Correctly guessed chat box element asset
         /// </summary>
         public GameObject CorrectlyGuessedChatBoxElementAsset
@@ -206,6 +227,11 @@ namespace ScribblersPad.Controllers
         /// Gets invoked when "system-message" game message has been received
         /// </summary>
         public event SystemMessageGameMessageReceivedDelegate OnSystemMessageGameMessageReceived;
+
+        /// <summary>
+        /// Gets invoked when "close-guess" game message has been received
+        /// </summary>
+        public event CloseGuessGameMessageReceivedDelegate OnCloseGuessGameMessageReceived;
 
         /// <summary>
         /// Gets invoked when "correct-guess" game message has been received
@@ -361,6 +387,20 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
+        /// Gets invoked when "close-guess" game message has been received
+        /// </summary>
+        /// <param name="closelyGuessedWord">Closely guessed word</param>
+        private void ScribblersClientManagerCloseGuessGameMessageReceivedEvent(string closelyGuessedWord)
+        {
+            AddChatBoxElement(closelyGuessedChatBoxElementAsset, string.Empty, closelyGuessedWord);
+            if (onCloseGuessGameMessageReceived != null)
+            {
+                onCloseGuessGameMessageReceived.Invoke();
+            }
+            OnCloseGuessGameMessageReceived?.Invoke(closelyGuessedWord);
+        }
+
+        /// <summary>
         /// Gets invoked when "correct-guess" game message has been received
         /// </summary>
         /// <param name="author">Author</param>
@@ -383,6 +423,7 @@ namespace ScribblersPad.Controllers
             ScribblersClientManager.OnMessageGameMessageReceived += ScribblersClientManagerMessageGameMessageReceivedEvent;
             ScribblersClientManager.OnNonGuessingPlayerMessageGameMessageReceived += ScribblersClientManagerNonGuessingPlayerMessageGameMessageReceivedEvent;
             ScribblersClientManager.OnSystemMessageGameMessageReceived += ScribblersClientManagerSystemMessageGameMessageReceivedEvent;
+            ScribblersClientManager.OnCloseGuessGameMessageReceived += ScribblersClientManagerCloseGuessGameMessageReceivedEvent;
             ScribblersClientManager.OnCorrectGuessGameMessageReceived += ScribblersClientManagerCorrectGuessGameMessageReceivedEvent;
         }
 
@@ -394,6 +435,7 @@ namespace ScribblersPad.Controllers
             ScribblersClientManager.OnMessageGameMessageReceived -= ScribblersClientManagerMessageGameMessageReceivedEvent;
             ScribblersClientManager.OnNonGuessingPlayerMessageGameMessageReceived -= ScribblersClientManagerNonGuessingPlayerMessageGameMessageReceivedEvent;
             ScribblersClientManager.OnSystemMessageGameMessageReceived -= ScribblersClientManagerSystemMessageGameMessageReceivedEvent;
+            ScribblersClientManager.OnCloseGuessGameMessageReceived -= ScribblersClientManagerCloseGuessGameMessageReceivedEvent;
             ScribblersClientManager.OnCorrectGuessGameMessageReceived -= ScribblersClientManagerCorrectGuessGameMessageReceivedEvent;
         }
 
@@ -406,6 +448,7 @@ namespace ScribblersPad.Controllers
             ValidateChatBoxElement(ref ownMessageChatBoxElementAsset);
             ValidateChatBoxElement(ref nonGuessingPlayerMessageChatBoxElementAsset);
             ValidateChatBoxElement(ref ownNonGuessingPlayerMessageChatBoxElementAsset);
+            ValidateChatBoxElement(ref closelyGuessedChatBoxElementAsset);
             ValidateChatBoxElement(ref correctlyGuessedChatBoxElementAsset);
             ValidateChatBoxElement(ref ownCorrectlyGuessedChatBoxElementAsset);
             ValidateChatBoxElement(ref systemMessageChatBoxElementAsset);
@@ -421,6 +464,7 @@ namespace ScribblersPad.Controllers
             NotifyIfReferenceIsMissing(ownMessageChatBoxElementAsset, nameof(ownMessageChatBoxElementAsset));
             NotifyIfReferenceIsMissing(nonGuessingPlayerMessageChatBoxElementAsset, nameof(nonGuessingPlayerMessageChatBoxElementAsset));
             NotifyIfReferenceIsMissing(ownNonGuessingPlayerMessageChatBoxElementAsset, nameof(ownNonGuessingPlayerMessageChatBoxElementAsset));
+            NotifyIfReferenceIsMissing(closelyGuessedChatBoxElementAsset, nameof(closelyGuessedChatBoxElementAsset));
             NotifyIfReferenceIsMissing(correctlyGuessedChatBoxElementAsset, nameof(correctlyGuessedChatBoxElementAsset));
             NotifyIfReferenceIsMissing(ownCorrectlyGuessedChatBoxElementAsset, nameof(ownCorrectlyGuessedChatBoxElementAsset));
             NotifyIfReferenceIsMissing(systemMessageChatBoxElementAsset, nameof(systemMessageChatBoxElementAsset));

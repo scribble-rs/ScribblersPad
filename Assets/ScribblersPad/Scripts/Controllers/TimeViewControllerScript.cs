@@ -115,7 +115,7 @@ namespace ScribblersPad.Controllers
         /// <param name="lobby">Lobby</param>
         private void UpdateCurrentTime(ILobby lobby)
         {
-            CurrentTime = lobby.RoundEndTime * 0.001f;
+            CurrentTime = lobby.CurrentDrawingTime * 0.001f;
             UpdateVisuals(lobby);
         }
 
@@ -125,7 +125,7 @@ namespace ScribblersPad.Controllers
         /// <param name="lobby">Lobby</param>
         private void UpdateVisuals(ILobby lobby)
         {
-            float value = CurrentTime * 1000.0f / lobby.RoundEndTime;
+            float value = CurrentTime / lobby.CurrentDrawingTime;
             if (currentTimeText)
             {
                 currentTimeText.text = string.Format(currentTimeInSecondsStringFormatStringTranslation ? currentTimeInSecondsStringFormatStringTranslation.ToString() : currentTimeInSecondsStringFormat, Mathf.RoundToInt(CurrentTime));
@@ -139,27 +139,27 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        private void ScribblersClientManagerReadyGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerReadyGameMessageReceivedEvent()
         {
-            UpdateCurrentTime(lobby);
+            UpdateCurrentTime(ScribblersClientManager.Lobby);
             if (onReadyGameMessageReceived != null)
             {
                 onReadyGameMessageReceived.Invoke();
             }
-            OnReadyGameMessageReceived?.Invoke(lobby);
+            OnReadyGameMessageReceived?.Invoke();
         }
 
         /// <summary>
         /// Gets invoked when a "next-turn" game message has been received
         /// </summary>
-        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent()
         {
-            UpdateCurrentTime(lobby);
+            UpdateCurrentTime(ScribblersClientManager.Lobby);
             if (onNextTurnGameMessageReceived != null)
             {
                 onNextTurnGameMessageReceived.Invoke();
             }
-            OnNextTurnGameMessageReceived?.Invoke(lobby);
+            OnNextTurnGameMessageReceived?.Invoke();
         }
 
         /// <summary>

@@ -37,6 +37,12 @@ namespace ScribblersPad.Managers
         private UnityEvent onNextTurnGameMessageReceived = default;
 
         /// <summary>
+        /// Gets invoked when a "name-change" game message has been received.
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onNameChangeGameMessageReceived = default;
+
+        /// <summary>
         /// Gets invoked when "update-players" game message has been received
         /// </summary>
         [SerializeField]
@@ -91,10 +97,34 @@ namespace ScribblersPad.Managers
         private UnityEvent onYourTurnGameMessageReceived = default;
 
         /// <summary>
+        /// Gets invoked when a "close-guess" game message has been received.
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onCloseGuessGameMessageReceived = default;
+
+        /// <summary>
         /// Gets invoked when "correct-guess" game message has been received
         /// </summary>
         [SerializeField]
         private UnityEvent onCorrectGuessGameMessageReceived = default;
+
+        /// <summary>
+        /// Gets invoked when a "kick-vote" game message has been received.
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onKickVoteGameMessageReceived = default;
+
+        /// <summary>
+        /// Gets invoked when a "drawer-kicked" game message has been received.
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onDrawerKickedGameMessageReceived = default;
+
+        /// <summary>
+        /// Gets invoked when a "owner-change" game message has been received.
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onOwnerChangeGameMessageReceived = default;
 
         /// <summary>
         /// Gets invoked when "drawing" game message has been received
@@ -129,6 +159,71 @@ namespace ScribblersPad.Managers
         public string LobbyID => (Lobby == null) ? string.Empty : Lobby.LobbyID;
 
         /// <summary>
+        /// Minimal drawing time in seconds
+        /// </summary>
+        public uint MinimalDrawingTime => (Lobby == null) ? 0U : Lobby.MinimalDrawingTime;
+
+        /// <summary>
+        /// Maximal drawing time in seconds
+        /// </summary>
+        public uint MaximalDrawingTime => (Lobby == null) ? 0U : Lobby.MaximalDrawingTime;
+
+        /// <summary>
+        /// Minimal round count
+        /// </summary>
+        public uint MinimalRoundCount => (Lobby == null) ? 0U : Lobby.MinimalRoundCount;
+
+        /// <summary>
+        /// Maximal round count
+        /// </summary>
+        public uint MaximalRoundCount => (Lobby == null) ? 0U : Lobby.MaximalRoundCount;
+
+        /// <summary>
+        /// Minimal of maximal player count
+        /// </summary>
+        public uint MinimalMaximalPlayerCount => (Lobby == null) ? 0U : Lobby.MinimalMaximalPlayerCount;
+
+        /// <summary>
+        /// Maximal of maximal player count
+        /// </summary>
+        public uint MaximalMaximalPlayerCount => (Lobby == null) ? 0U : Lobby.MaximalMaximalPlayerCount;
+
+        /// <summary>
+        /// Minimal clients per IP count limit
+        /// </summary>
+        public uint MinimalClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.MinimalClientsPerIPLimit;
+
+        /// <summary>
+        /// Maximal clients per IP count limit
+        /// </summary>
+        public uint MaximalClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.MaximalClientsPerIPLimit;
+
+        /// <summary>
+        /// Maximal player count
+        /// </summary>
+        public uint MaximalPlayerCount => (Lobby == null) ? 0U : Lobby.MaximalPlayerCount;
+
+        /// <summary>
+        /// Is lobby public
+        /// </summary>
+        public bool IsPublic => (Lobby != null) && Lobby.IsPublic;
+
+        /// <summary>
+        /// Is votekicking enabled
+        /// </summary>
+        public bool IsVotekickingEnabled => (Lobby != null) && Lobby.IsVotekickingEnabled;
+
+        /// <summary>
+        /// Custom words chance
+        /// </summary>
+        public uint CustomWordsChance => (Lobby == null) ? 0U : Lobby.CustomWordsChance;
+
+        /// <summary>
+        /// Clients per IP limit
+        /// </summary>
+        public uint ClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.ClientsPerIPLimit;
+
+        /// <summary>
         /// Drawing board base width
         /// </summary>
         public uint DrawingBoardBaseWidth => (Lobby == null) ? 0U : Lobby.DrawingBoardBaseWidth;
@@ -137,6 +232,26 @@ namespace ScribblersPad.Managers
         /// Drawing board base height
         /// </summary>
         public uint DrawingBoardBaseHeight => (Lobby == null) ? 0U : Lobby.DrawingBoardBaseHeight;
+
+        /// <summary>
+        /// Minimal brush size
+        /// </summary>
+        public uint MinimalBrushSize => (Lobby == null) ? 0U : Lobby.MinimalBrushSize;
+
+        /// <summary>
+        /// Maximal brush size
+        /// </summary>
+        public uint MaximalBrushSize => (Lobby == null) ? 0U : Lobby.MaximalBrushSize;
+
+        /// <summary>
+        /// Suggested brush sizes
+        /// </summary>
+        public IEnumerable<uint> SuggestedBrushSizes => (Lobby == null) ? Array.Empty<uint>() : Lobby.SuggestedBrushSizes;
+
+        /// <summary>
+        /// Canvas color
+        /// </summary>
+        public Color32 CanvasColor { get; private set; } = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
 
         /// <summary>
         /// My player in lobby
@@ -164,9 +279,14 @@ namespace ScribblersPad.Managers
         public uint MaximalRounds => (Lobby == null) ? 0U : Lobby.MaximalRounds;
 
         /// <summary>
-        /// Round end time
+        /// Current drawing time in milliseconds
         /// </summary>
-        public long RoundEndTime => (Lobby == null) ? 0L : Lobby.RoundEndTime;
+        public long CurrentDrawingTime => (Lobby == null) ? 0L : Lobby.CurrentDrawingTime;
+
+        /// <summary>
+        /// Previous word
+        /// </summary>
+        public string PreviousWord => (Lobby == null) ? string.Empty : Lobby.PreviousWord;
 
         /// <summary>
         /// Word hints
@@ -186,7 +306,7 @@ namespace ScribblersPad.Managers
         /// <summary>
         /// Game state
         /// </summary>
-        public EGameState GameState => (Lobby == null) ? EGameState.Unknown : Lobby.GameState;
+        public EGameState GameState => (Lobby == null) ? EGameState.Invalid : Lobby.GameState;
 
         /// <summary>
         /// Gets invoked when "ready" game message has been received
@@ -197,6 +317,11 @@ namespace ScribblersPad.Managers
         /// Gets invoked when "next-turn" game message has been received
         /// </summary>
         public event NextTurnGameMessageReceivedDelegate OnNextTurnGameMessageReceived;
+
+        /// <summary>
+        /// Gets invoked when a "name-change" game message has been received
+        /// </summary>
+        public event NameChangeGameMessageReceivedDelegate OnNameChangeGameMessageReceived;
 
         /// <summary>
         /// Gets invoked when "update-players" game message has been received
@@ -244,9 +369,29 @@ namespace ScribblersPad.Managers
         public event YourTurnGameMessageReceivedDelegate OnYourTurnGameMessageReceived;
 
         /// <summary>
+        /// Gets invoked when a "close-guess" game message has been received
+        /// </summary>
+        public event CloseGuessGameMessageReceivedDelegate OnCloseGuessGameMessageReceived;
+
+        /// <summary>
         /// Gets invoked when "correct-guess" game message has been received
         /// </summary>
         public event CorrectGuessGameMessageReceivedDelegate OnCorrectGuessGameMessageReceived;
+
+        /// <summary>
+        /// Gets invoked when a "kick-vote" game message has been received.
+        /// </summary>
+        public event KickVoteGameMessageReceivedDelegate OnKickVoteGameMessageReceived;
+
+        /// <summary>
+        /// Gets invoked when a "drawer-kicked" game message has been received.
+        /// </summary>
+        public event DrawerKickedGameMessageReceivedDelegate OnDrawerKickedGameMessageReceived;
+
+        /// <summary>
+        /// Gets invoked when a "owner-change" game message has been received.
+        /// </summary>
+        public event OwnerChangeGameMessageReceivedDelegate OnOwnerChangeGameMessageReceived;
 
         /// <summary>
         /// Gets invoked when "drawing" game message has been received
@@ -267,6 +412,7 @@ namespace ScribblersPad.Managers
             {
                 Lobby.OnReadyGameMessageReceived += LobbyReadyGameMessageReceivedEvent;
                 Lobby.OnNextTurnGameMessageReceived += LobbyNextTurnGameMessageReceivedEvent;
+                Lobby.OnNameChangeGameMessageReceived += LobbyNameChangeMessageReceivedEvent;
                 Lobby.OnUpdatePlayersGameMessageReceived += LobbyUpdatePlayersGameMessageReceivedEvent;
                 Lobby.OnUpdateWordhintGameMessageReceived += LobbyUpdateWordhintGameMessageReceivedEvent;
                 Lobby.OnMessageGameMessageReceived += LobbyMessageGameMessageReceivedEvent;
@@ -276,7 +422,11 @@ namespace ScribblersPad.Managers
                 Lobby.OnFillGameMessageReceived += LobbyFillGameMessageReceivedEvent;
                 Lobby.OnClearDrawingBoardGameMessageReceived += LobbyClearDrawingBoardGameMessageReceivedEvent;
                 Lobby.OnYourTurnGameMessageReceived += LobbyYourTurnGameMessageReceivedEvent;
+                Lobby.OnCloseGuessGameMessageReceived += LobbyCloseGuessGameMessageReceivedEvent;
                 Lobby.OnCorrectGuessGameMessageReceived += LobbyCorrectGuessGameMessageReceivedEvent;
+                Lobby.OnKickVoteGameMessageReceived += LobbyKickVoteGameMessageReceivedEvent;
+                Lobby.OnDrawerKickedGameMessageReceived += LobbyDrawerKickedGameMessageReceivedEvent;
+                Lobby.OnOwnerChangeGameMessageReceived += LobbyOwnerChangeGameMessageReceivedEvent;
                 Lobby.OnDrawingGameMessageReceived += LobbyDrawingGameMessageReceivedEvent;
                 Lobby.OnUnknownGameMessageReceived += LobbyUnknownGameMessageReceivedEvent;
             }
@@ -285,27 +435,38 @@ namespace ScribblersPad.Managers
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void LobbyReadyGameMessageReceivedEvent(ILobby lobby)
+        private void LobbyReadyGameMessageReceivedEvent()
         {
+            CanvasColor = new Color32(Lobby.CanvasColor.R, Lobby.CanvasColor.G, Lobby.CanvasColor.B, 0xFF);
             if (onReadyGameMessageReceived != null)
             {
                 onReadyGameMessageReceived.Invoke();
             }
-            OnReadyGameMessageReceived?.Invoke(lobby);
+            OnReadyGameMessageReceived?.Invoke();
         }
 
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void LobbyNextTurnGameMessageReceivedEvent(ILobby lobby)
+        private void LobbyNextTurnGameMessageReceivedEvent()
         {
             if (onNextTurnGameMessageReceived != null)
             {
                 onNextTurnGameMessageReceived.Invoke();
             }
-            OnNextTurnGameMessageReceived?.Invoke(lobby);
+            OnNextTurnGameMessageReceived?.Invoke();
+        }
+
+        /// <summary>
+        /// Gets invoked when a "name-change" game message has been received
+        /// </summary>
+        private void LobbyNameChangeMessageReceivedEvent(IPlayer player)
+        {
+            if (onNameChangeGameMessageReceived != null)
+            {
+                onNameChangeGameMessageReceived.Invoke();
+            }
+            OnNameChangeGameMessageReceived?.Invoke(player);
         }
 
         /// <summary>
@@ -433,6 +594,18 @@ namespace ScribblersPad.Managers
         }
 
         /// <summary>
+        /// Gets invoked when "close-guess" game message has been received
+        /// </summary>
+        private void LobbyCloseGuessGameMessageReceivedEvent(string closelyGuessedWord)
+        {
+            if (onCloseGuessGameMessageReceived != null)
+            {
+                onCloseGuessGameMessageReceived.Invoke();
+            }
+            OnCloseGuessGameMessageReceived?.Invoke(closelyGuessedWord);
+        }
+
+        /// <summary>
         /// Gets invoked when "correct-guess" game message has been received
         /// </summary>
         private void LobbyCorrectGuessGameMessageReceivedEvent(IPlayer player)
@@ -442,6 +615,42 @@ namespace ScribblersPad.Managers
                 onCorrectGuessGameMessageReceived.Invoke();
             }
             OnCorrectGuessGameMessageReceived?.Invoke(player);
+        }
+
+        /// <summary>
+        /// Gets invoked when "kick-vote" game message has been received
+        /// </summary>
+        private void LobbyKickVoteGameMessageReceivedEvent(IPlayer player, uint voteCount, uint requiredVoteCount)
+        {
+            if (onKickVoteGameMessageReceived != null)
+            {
+                onKickVoteGameMessageReceived.Invoke();
+            }
+            OnKickVoteGameMessageReceived?.Invoke(player, voteCount, requiredVoteCount);
+        }
+
+        /// <summary>
+        /// Gets invoked when "drawer-kicked" game message has been received
+        /// </summary>
+        private void LobbyDrawerKickedGameMessageReceivedEvent()
+        {
+            if (onDrawerKickedGameMessageReceived != null)
+            {
+                onDrawerKickedGameMessageReceived.Invoke();
+            }
+            OnDrawerKickedGameMessageReceived?.Invoke();
+        }
+
+        /// <summary>
+        /// Gets invoked when "owner-changed" game message has been received
+        /// </summary>
+        private void LobbyOwnerChangeGameMessageReceivedEvent(IPlayer player)
+        {
+            if (onOwnerChangeGameMessageReceived != null)
+            {
+                onOwnerChangeGameMessageReceived.Invoke();
+            }
+            OnOwnerChangeGameMessageReceived?.Invoke(player);
         }
 
         /// <summary>
@@ -477,7 +686,7 @@ namespace ScribblersPad.Managers
             if (save_game.Data != null)
             {
                 DestroyClient();
-                ScribblersClient = Clients.Create(save_game.Data.ScribblersHost);
+                ScribblersClient = Clients.Create(save_game.Data.ScribblersHost, save_game.Data.UserSessionID, save_game.Data.IsUsingSecureProtocols);
             }
         }
 
@@ -489,6 +698,12 @@ namespace ScribblersPad.Managers
             LeaveLobby();
             if (ScribblersClient != null)
             {
+                SaveGame<SaveGameData> save_game = SaveGames.Get<SaveGameData>();
+                if (save_game != null)
+                {
+                    save_game.Data.UserSessionID = ScribblersClient.UserSessionID;
+                    save_game.Save();
+                }
                 ScribblersClient.Dispose();
                 ScribblersClient = null;
             }
@@ -504,6 +719,7 @@ namespace ScribblersPad.Managers
                 Lobby.Dispose();
                 Lobby.OnReadyGameMessageReceived -= LobbyReadyGameMessageReceivedEvent;
                 Lobby.OnNextTurnGameMessageReceived -= LobbyNextTurnGameMessageReceivedEvent;
+                Lobby.OnNameChangeGameMessageReceived -= LobbyNameChangeMessageReceivedEvent;
                 Lobby.OnUpdatePlayersGameMessageReceived -= LobbyUpdatePlayersGameMessageReceivedEvent;
                 Lobby.OnUpdateWordhintGameMessageReceived -= LobbyUpdateWordhintGameMessageReceivedEvent;
                 Lobby.OnMessageGameMessageReceived -= LobbyMessageGameMessageReceivedEvent;
@@ -513,7 +729,11 @@ namespace ScribblersPad.Managers
                 Lobby.OnFillGameMessageReceived -= LobbyFillGameMessageReceivedEvent;
                 Lobby.OnClearDrawingBoardGameMessageReceived -= LobbyClearDrawingBoardGameMessageReceivedEvent;
                 Lobby.OnYourTurnGameMessageReceived -= LobbyYourTurnGameMessageReceivedEvent;
+                Lobby.OnCloseGuessGameMessageReceived -= LobbyCloseGuessGameMessageReceivedEvent;
                 Lobby.OnCorrectGuessGameMessageReceived -= LobbyCorrectGuessGameMessageReceivedEvent;
+                Lobby.OnKickVoteGameMessageReceived -= LobbyKickVoteGameMessageReceivedEvent;
+                Lobby.OnDrawerKickedGameMessageReceived -= LobbyDrawerKickedGameMessageReceivedEvent;
+                Lobby.OnOwnerChangeGameMessageReceived -= LobbyOwnerChangeGameMessageReceivedEvent;
                 Lobby.OnDrawingGameMessageReceived -= LobbyDrawingGameMessageReceivedEvent;
                 Lobby.OnUnknownGameMessageReceived -= LobbyUnknownGameMessageReceivedEvent;
                 Lobby = null;
@@ -565,12 +785,80 @@ namespace ScribblersPad.Managers
             }
             return ret;
         }
-        
+
+        /// <summary>
+        /// Gets server statistics asynchronously
+        /// </summary>
+        /// <returns>Server statistics task</returns>
+        public Task<IServerStatistics> GetServerStatisticsAsync() => (ScribblersClient == null) ? Task.FromResult<IServerStatistics>(new ServerStatistics()) : ScribblersClient.GetServerStatisticsAsync();
+
+        /// <summary>
+        /// Lists all public lobbies asynchronously
+        /// </summary>
+        /// <returns>Lobby views task</returns>
+        public Task<IEnumerable<ILobbyView>> ListLobbiesAsync() => (ScribblersClient == null) ? Task.FromResult<IEnumerable<ILobbyView>>(Array.Empty<ILobbyView>()) : ScribblersClient.ListLobbiesAsync();
+
+        /// <summary>
+        /// Changes lobby rules asynchronously
+        /// </summary>
+        /// <param name="language">Language</param>
+        /// <param name="isPublic">Is lobby public</param>
+        /// <param name="maximalPlayerCount">Maximal player count</param>
+        /// <param name="drawingTime">Drawing time</param>
+        /// <param name="roundCount">Round count</param>
+        /// <param name="customWords">Custom words</param>
+        /// <param name="customWordsChance">Custom words chance</param>
+        /// <param name="isVotekickingEnabled">Is votekicking enabled</param>
+        /// <param name="clientsPerIPLimit">Clients per IP limit</param>
+        /// <returns>Task</returns>
+        public Task ChangeLobbyRulesAsync(ELanguage? language = null, bool? isPublic = null, uint? maximalPlayerCount = null, ulong? drawingTime = null, uint? roundCount = null, IReadOnlyList<string> customWords = null, uint? customWordsChance = null, bool? isVotekickingEnabled = null, uint? clientsPerIPLimit = null) => (ScribblersClient == null) ? Task.CompletedTask : ScribblersClient.ChangeLobbyRulesAsync(language, isPublic, maximalPlayerCount, drawingTime, roundCount, customWords, customWordsChance, isVotekickingEnabled, clientsPerIPLimit);
+
         /// <summary>
         /// Sends a "start-game" message asynchronously
         /// </summary>
         /// <returns>Task</returns>
         public Task SendStartGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendStartGameMessageAsync();
+
+        /// <summary>
+        /// Sends a "line" game message asynchronously
+        /// </summary>
+        /// <param name="fromX">X component of start line position</param>
+        /// <param name="fromY">Y component of start line position</param>
+        /// <param name="toX">X component of end line position</param>
+        /// <param name="toY">Y component of end line position</param>
+        /// <param name="color">Line color</param>
+        /// <param name="lineWidth">Line width in pixels</param>
+        /// <returns>Task</returns>
+        public Task SendLineGameMessageAsync(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth) => (Lobby == null) ? Task.CompletedTask : Lobby.SendLineGameMessageAsync(fromX, fromY, toX, toY, color, lineWidth);
+
+        /// <summary>
+        /// Sends a "fill" game message asynchronously
+        /// </summary>
+        /// <param name="positionX">X component of fill start posiiton</param>
+        /// <param name="positionY">Y component of fill start position</param>
+        /// <param name="color"></param>
+        /// <returns>Task</returns>
+        public Task SendFillGameMessageAsync(float positionX, float positionY, System.Drawing.Color color) => (Lobby == null) ? Task.CompletedTask : Lobby.SendFillGameMessageAsync(positionX, positionY, color);
+
+        /// <summary>
+        /// Sends a "clear-drawing-board" game message asynchronously
+        /// </summary>
+        /// <returns>Task</returns>
+        public Task SendClearDrawingBoardGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendClearDrawingBoardGameMessageAsync();
+
+        /// <summary>
+        /// Sends a "message" game message asynchronously
+        /// </summary>
+        /// <param name="content">Message content</param>
+        /// <returns>Task</returns>
+        public Task SendMessageGameMessageAsync(string content) => (Lobby == null) ? Task.CompletedTask : Lobby.SendMessageGameMessageAsync(content);
+
+        /// <summary>
+        /// Sends a "choose-word" game message asynchronously
+        /// </summary>
+        /// <param name="index">Word index</param>
+        /// <returns>Task</returns>
+        public Task SendChooseWordGameMessageAsync(uint index) => (Lobby == null) ? Task.CompletedTask : Lobby.SendChooseWordGameMessageAsync(index);
 
         /// <summary>
         /// Sends a "name-change" game message asynchronously
@@ -586,52 +874,17 @@ namespace ScribblersPad.Managers
         public Task SendRequestDrawingGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendRequestDrawingGameMessageAsync();
 
         /// <summary>
-        /// Sends a "clear-drawing-board" game message asynchronously
-        /// </summary>
-        /// <returns>Task</returns>
-        public Task SendClearDrawingBoardGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendClearDrawingBoardGameMessageAsync();
-
-        /// <summary>
-        /// Sends a "fill" game message asynchronously
-        /// </summary>
-        /// <param name="positionX">X component of fill start posiiton</param>
-        /// <param name="positionY">Y component of fill start position</param>
-        /// <param name="color"></param>
-        /// <returns>Task</returns>
-        public Task SendFillGameMessageAsync(float positionX, float positionY, System.Drawing.Color color) => (Lobby == null) ? Task.CompletedTask : Lobby.SendFillGameMessageAsync(positionX, positionY, color);
-
-        /// <summary>
-        /// Sends a "line" game message asynchronously
-        /// </summary>
-        /// <param name="fromX">X component of start line position</param>
-        /// <param name="fromY">Y component of start line position</param>
-        /// <param name="toX">X component of end line position</param>
-        /// <param name="toY">Y component of end line position</param>
-        /// <param name="color">Line color</param>
-        /// <param name="lineWidth">Line width in pixels</param>
-        /// <returns>Task</returns>
-        public Task SendLineGameMessageAsync(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth) => (Lobby == null) ? Task.CompletedTask : Lobby.SendLineGameMessageAsync(fromX, fromY, toX, toY, color, lineWidth);
-
-        /// <summary>
-        /// Sends a "choose-word" game message asynchronously
-        /// </summary>
-        /// <param name="index">Word index</param>
-        /// <returns>Task</returns>
-        public Task SendChooseWordGameMessageAsync(uint index) => (Lobby == null) ? Task.CompletedTask : Lobby.SendChooseWordGameMessageAsync(index);
-
-        /// <summary>
         /// Sends a "kick-vote" game message asynchronously
         /// </summary>
         /// <param name="toKickPlayer">To kick player</param>
         /// <returns></returns>
-        public Task SendKickVoteAsync(IPlayer toKickPlayer) => (Lobby == null) ? Task.CompletedTask : Lobby.SendKickVoteAsync(toKickPlayer);
+        public Task SendKickVoteGameMessageAsync(IPlayer toKickPlayer) => (Lobby == null) ? Task.CompletedTask : Lobby.SendKickVoteGameMessageAsync(toKickPlayer);
 
         /// <summary>
-        /// Sends a "message" game message asynchronously
+        /// Sends a "keep-alive" game message asynchronously
         /// </summary>
-        /// <param name="content">Message content</param>
         /// <returns>Task</returns>
-        public Task SendMessageGameMessageAsync(string content) => (Lobby == null) ? Task.CompletedTask : Lobby.SendMessageGameMessageAsync(content);
+        public Task SendKeepAliveGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendKeepAliveGameMessageAsync();
 
         /// <summary>
         /// Gets invoked when script gets enabled
@@ -666,19 +919,19 @@ namespace ScribblersPad.Managers
             }
             else
             {
-                string username = save_game.Data.ScribblersUsername.Trim();
+                string username = save_game.Data.Username.Trim();
                 if (username.Length > Rules.maximalUsernameLength)
                 {
                     username = username.Substring(0, (int)Rules.maximalUsernameLength);
                 }
-                if (string.IsNullOrWhiteSpace(save_game.Data.ScribblersLobbyID.Trim()))
+                if (string.IsNullOrWhiteSpace(save_game.Data.LobbyID.Trim()))
                 {
-                    if (!await CreateLobbyAsync(username, ELanguage.English, true, Rules.maximalPlayers, Rules.maximalDrawingTime, Rules.maximalRounds, Array.Empty<string>(), Rules.minimalCustomWordsChance, false, Rules.maximalClientsPerIPLimit))
+                    if (!await CreateLobbyAsync(username, save_game.Data.LobbyLanguage, save_game.Data.IsLobbyPublic, save_game.Data.MaximalPlayerCount, save_game.Data.DrawingTime, save_game.Data.RoundCount, save_game.Data.CustomWords.Split(','), save_game.Data.CustomWordsChance, save_game.Data.IsVotekickingEnabled, save_game.Data.PlayersPerIPLimit))
                     {
                         SceneLoaderManager.LoadScene("MainMenuScene");
                     }
                 }
-                else if (!await EnterLobbyAsync(save_game.Data.ScribblersLobbyID.Trim(), username))
+                else if (!await EnterLobbyAsync(save_game.Data.LobbyID.Trim(), username))
                 {
                     SceneLoaderManager.LoadScene("MainMenuScene");
                 }

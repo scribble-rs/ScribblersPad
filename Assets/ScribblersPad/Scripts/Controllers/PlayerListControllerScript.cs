@@ -45,6 +45,12 @@ namespace ScribblersPad.Controllers
         private UnityEvent onNextTurnGameMessageReceived;
 
         /// <summary>
+        /// Gets invoked when a "name-change" game message has been received
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onNameChangeGameMessageReceived;
+
+        /// <summary>
         /// Gets invoked when a "update-player" game message has been received
         /// </summary>
         [SerializeField]
@@ -62,6 +68,33 @@ namespace ScribblersPad.Controllers
         private readonly Dictionary<string, (RectTransform, PlayerListElementControllerScript)> playerListElementControllers = new Dictionary<string, (RectTransform, PlayerListElementControllerScript)>();
 
         /// <summary>
+        /// Player list element asset
+        /// </summary>
+        public GameObject PlayerListElementAsset
+        {
+            get => playerListElementAsset;
+            set => playerListElementAsset = value;
+        }
+
+        /// <summary>
+        /// Own player list element asset
+        /// </summary>
+        public GameObject OwnPlayerListElementAsset
+        {
+            get => ownPlayerListElementAsset;
+            set => ownPlayerListElementAsset = value;
+        }
+
+        /// <summary>
+        /// Player list element parent rectangle transform
+        /// </summary>
+        public RectTransform PlayerListElementParentRectangleTransform
+        {
+            get => playerListElementParentRectangleTransform;
+            set => playerListElementParentRectangleTransform = value;
+        }
+
+        /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
         public event ReadyGameMessageReceivedDelegate OnReadyGameMessageReceived;
@@ -70,6 +103,11 @@ namespace ScribblersPad.Controllers
         /// Gets invoked when a "next-turn" game message has been received
         /// </summary>
         public event NextTurnGameMessageReceivedDelegate OnNextTurnGameMessageReceived;
+
+        /// <summary>
+        /// Gets invoked when a "name-change" game message has been received
+        /// </summary>
+        public event NameChangeGameMessageReceivedDelegate OnNameChangeGameMessageReceived;
 
         /// <summary>
         /// Gets invoked when a "update-player" game message has been received
@@ -149,29 +187,40 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void ScribblersClientManagerReadyGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerReadyGameMessageReceivedEvent()
         {
-            UpdatePlayers(lobby);
+            UpdatePlayers(ScribblersClientManager.Lobby);
             if (onReadyGameMessageReceived != null)
             {
                 onReadyGameMessageReceived.Invoke();
             }
-            OnReadyGameMessageReceived?.Invoke(lobby);
+            OnReadyGameMessageReceived?.Invoke();
         }
 
         /// <summary>
         /// Gets invoked when a "next-turn" game message has been received
         /// </summary>
-        /// <param name="lobby">Lobby</param>
-        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerNextTurnGameMessageReceivedEvent()
         {
-            UpdatePlayers(lobby);
+            UpdatePlayers(ScribblersClientManager.Lobby);
             if (onNextTurnGameMessageReceived != null)
             {
                 onNextTurnGameMessageReceived.Invoke();
             }
-            OnNextTurnGameMessageReceived?.Invoke(lobby);
+            OnNextTurnGameMessageReceived?.Invoke();
+        }
+
+        /// <summary>
+        /// Gets invoked when a "name-change" game message has been received
+        /// </summary>
+        private void ScribblersClientManagerNameChangeGameMessageReceivedEvent(IPlayer player)
+        {
+            UpdatePlayer(player, ScribblersClientManager.Lobby);
+            if (onNameChangeGameMessageReceived != null)
+            {
+                onNameChangeGameMessageReceived.Invoke();
+            }
+            OnNameChangeGameMessageReceived?.Invoke(player);
         }
 
         /// <summary>
@@ -210,6 +259,7 @@ namespace ScribblersPad.Controllers
         {
             ScribblersClientManager.OnReadyGameMessageReceived += ScribblersClientManagerReadyGameMessageReceivedEvent;
             ScribblersClientManager.OnNextTurnGameMessageReceived += ScribblersClientManagerNextTurnGameMessageReceivedEvent;
+            ScribblersClientManager.OnNameChangeGameMessageReceived += ScribblersClientManagerNameChangeGameMessageReceivedEvent;
             ScribblersClientManager.OnUpdatePlayersGameMessageReceived += ScribblersClientManagerUpdatePlayersGameMessageReceivedEvent;
             ScribblersClientManager.OnCorrectGuessGameMessageReceived += ScribblersClientManagerCorrectGuessGameMessageReceivedEvent;
         }
@@ -221,6 +271,7 @@ namespace ScribblersPad.Controllers
         {
             ScribblersClientManager.OnReadyGameMessageReceived -= ScribblersClientManagerReadyGameMessageReceivedEvent;
             ScribblersClientManager.OnNextTurnGameMessageReceived -= ScribblersClientManagerNextTurnGameMessageReceivedEvent;
+            ScribblersClientManager.OnNameChangeGameMessageReceived -= ScribblersClientManagerNameChangeGameMessageReceivedEvent;
             ScribblersClientManager.OnUpdatePlayersGameMessageReceived -= ScribblersClientManagerUpdatePlayersGameMessageReceivedEvent;
             ScribblersClientManager.OnCorrectGuessGameMessageReceived -= ScribblersClientManagerCorrectGuessGameMessageReceivedEvent;
         }

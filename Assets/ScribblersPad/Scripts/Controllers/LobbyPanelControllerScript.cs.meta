@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: ce9fd8ad77a81a648a9d3ed138c0bc3d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - unknownLanguageSprite: {fileID: 21300000, guid: 0c0a08203fd4f914f89f535745892685, type: 3}
+  - isVotekickingDisabledSprite: {instanceID: 0}
+  - isVotekickingEnabledSprite: {instanceID: 0}
+  - isNotUsingCustomWordsSprite: {instanceID: 0}
+  - isUsingCustomWordsSprite: {instanceID: 0}
+  - currentRoundStringFormatStringTranslation: {fileID: 11400000, guid: 7277e04746f11984999e8ee1ceea2f92, type: 2}
+  - playerCountStringFormatStringTranslation: {fileID: 11400000, guid: b3074deaabe14264f905e468720e8a89, type: 2}
+  - languageImage: {instanceID: 0}
+  - isVotekickingEnabledImage: {instanceID: 0}
+  - isUsingCustomWordsImage: {instanceID: 0}
+  - currentRoundText: {instanceID: 0}
+  - playerCountText: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

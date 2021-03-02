@@ -29,8 +29,9 @@ namespace ScribblersPad.Triggers
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
         /// </summary>
-        private void ScribblersClientManagerReadyGameMessageReceivedEvent(ILobby lobby)
+        private void ScribblersClientManagerReadyGameMessageReceivedEvent()
         {
+            ILobby lobby = ScribblersClientManager.Lobby;
             if (TryGetComponent(out Slider brush_size_slider))
             {
                 if (lobby.MinimalBrushSize > brush_size_slider.maxValue)
@@ -49,7 +50,7 @@ namespace ScribblersPad.Triggers
             {
                 onReadyGameMessageReceived.Invoke();
             }
-            OnReadyGameMessageReceived?.Invoke(lobby);
+            OnReadyGameMessageReceived?.Invoke();
             Destroy(this);
         }
 

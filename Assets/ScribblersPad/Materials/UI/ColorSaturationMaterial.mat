@@ -50,7 +50,7 @@ Material:
     m_Floats:
     - _EnableExternalAlpha: 0
     m_Colors:
-    - InputColor: {r: 0, g: 1, b: 0, a: 1}
+    - InputColor: {r: 1, g: 0.03508772, b: 0, a: 1}
     - _Color: {r: 0, g: 1, b: 0.60236835, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _MainColor: {r: 1, g: 0, b: 0.42470455, a: 1}

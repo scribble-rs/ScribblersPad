@@ -10,16 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 633ca26d071a54346aec853814800eb0, type: 3}
-  m_Name: CurrentRoundFormatStringTranslation
+  m_Name: CustomWordsChanceStringTranslation
   m_EditorClassIdentifier: 
   stringTranslation:
     strings:
-    - stringValue: 'Round:
-
-        {0}/{1}'
+    - stringValue: Custom words chance
       language: 10
-    - stringValue: 'Runde:
-
-        {0}/{1}'
+    - stringValue: "Chance der benutzerdefinierten W\xF6rter"
       language: 15
   comment: 

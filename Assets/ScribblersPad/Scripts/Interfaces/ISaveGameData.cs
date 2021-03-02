@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using ScribblersSharp;
+
+/// <summary>
 /// Scribble.rs Pad namespace
 /// </summary>
 namespace ScribblersPad
@@ -14,13 +16,68 @@ namespace ScribblersPad
         string ScribblersHost { get; set; }
 
         /// <summary>
-        /// Scribble.rs lobby ID
+        /// User session ID
         /// </summary>
-        string ScribblersLobbyID { get; set; }
+        string UserSessionID { get; set; }
 
         /// <summary>
-        /// Scribble.rs username
+        /// Is using secure protocols
         /// </summary>
-        string ScribblersUsername { get; set; }
+        bool IsUsingSecureProtocols { get; set; }
+
+        /// <summary>
+        /// Lobby ID
+        /// </summary>
+        string LobbyID { get; set; }
+
+        /// <summary>
+        /// Username
+        /// </summary>
+        string Username { get; set; }
+
+        /// <summary>
+        /// Lobby language
+        /// </summary>
+        ELanguage LobbyLanguage { get; set; }
+
+        /// <summary>
+        /// Drawing time in seconds
+        /// </summary>
+        uint DrawingTime { get; set; }
+
+        /// <summary>
+        /// Round count
+        /// </summary>
+        uint RoundCount { get; set; }
+
+        /// <summary>
+        /// Maximal player count
+        /// </summary>
+        uint MaximalPlayerCount { get; set; }
+
+        /// <summary>
+        /// Is lobby public
+        /// </summary>
+        bool IsLobbyPublic { get; set; }
+
+        /// <summary>
+        /// Custom words
+        /// </summary>
+        string CustomWords { get; set; }
+
+        /// <summary>
+        /// Custom words chance
+        /// </summary>
+        uint CustomWordsChance { get; set; }
+
+        /// <summary>
+        /// Players per IP limit
+        /// </summary>
+        uint PlayersPerIPLimit { get; set; }
+
+        /// <summary>
+        /// Is votekicking enabled
+        /// </summary>
+        bool IsVotekickingEnabled { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using ScribblersSharp;
+
+/// <summary>
 /// Scribble.rs Pad namespace
 /// </summary>
 namespace ScribblersPad
@@ -12,5 +14,10 @@ namespace ScribblersPad
         /// Host
         /// </summary>
         string Host { get; set; }
+
+        /// <summary>
+        /// Lobby language
+        /// </summary>
+        ELanguage LobbyLanguage { get; set; }
     }
 }

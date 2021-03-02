@@ -1,4 +1,7 @@
-﻿/// <summary>
+﻿using Newtonsoft.Json;
+using ScribblersSharp.JSONConverters;
+
+/// <summary>
 /// Scribble.rs ♯ namespace
 /// </summary>
 namespace ScribblersSharp
@@ -6,12 +9,13 @@ namespace ScribblersSharp
     /// <summary>
     /// Game state enumerator
     /// </summary>
+    [JsonConverter(typeof(GameStateJSONConverter))]
     public enum EGameState
     {
         /// <summary>
-        /// Unknown game state
+        /// Invalid game state
         /// </summary>
-        Unknown,
+        Invalid,
 
         /// <summary>
         /// Game has not started yet
