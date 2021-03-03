@@ -23,24 +23,14 @@ namespace ScribblersPad
         RadialSelectorControllerScript ColorHueRadialSelector { get; set; }
 
         /// <summary>
-        /// Color saturation slider
+        /// Color saturation and intensity triangle rectangle transform
         /// </summary>
-        Slider ColorSaturationSlider { get; set; }
+        RectTransform ColorSaturationIntensityTriangleRectangleTransform { get; set; }
 
         /// <summary>
-        /// Color saturation slider background color input material controller
+        /// Color saturation and intensity triangle selector controller
         /// </summary>
-        ColorInputMaterialControllerScript ColorSaturationSliderBackgroundColorInputMaterialController { get; set; }
-
-        /// <summary>
-        /// Color intensity slider
-        /// </summary>
-        Slider ColorIntensitySlider { get; set; }
-
-        /// <summary>
-        /// Color intensity slider background color input material controller
-        /// </summary>
-        ColorInputMaterialControllerScript ColorIntensitySliderBackgroundColorInputMaterialController { get; set; }
+        TriangleSelectorControllerScript ColorSaturationIntensityTriangleSelectorController { get; set; }
 
         /// <summary>
         /// Color preview image

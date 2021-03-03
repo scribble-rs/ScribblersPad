@@ -25,28 +25,22 @@ namespace ScribblersPad.Controllers
         private RadialSelectorControllerScript colorHueRadialSelector = default;
 
         /// <summary>
-        /// Color saturation slider
+        /// Color saturation and intensity triangle rectangle transform
         /// </summary>
         [SerializeField]
-        private Slider colorSaturationSlider = default;
+        private RectTransform colorSaturationIntensityTriangleRectangleTransform = default;
 
         /// <summary>
-        /// Color saturation slider background color input material controller
+        /// Color saturation and intensity triangle selector controller
         /// </summary>
         [SerializeField]
-        private ColorInputMaterialControllerScript colorSaturationSliderBackgroundColorInputMaterialController = default;
+        private TriangleSelectorControllerScript colorSaturationIntensityTriangleSelectorController = default;
 
         /// <summary>
-        /// Color intensity slider
+        /// Hue material input controller
         /// </summary>
         [SerializeField]
-        private Slider colorIntensitySlider = default;
-
-        /// <summary>
-        /// Color intensity slider background color input material controller
-        /// </summary>
-        [SerializeField]
-        private ColorInputMaterialControllerScript colorIntensitySliderBackgroundColorInputMaterialController = default;
+        private HueMaterialInputControllerScript hueMaterialInputController = default;
 
         /// <summary>
         /// Color preview image
@@ -72,14 +66,6 @@ namespace ScribblersPad.Controllers
                 {
                     hue = colorHueRadialSelector.SelectionValue;
                 }
-                if (colorSaturationSlider)
-                {
-                    saturation = colorSaturationSlider.value;
-                }
-                if (colorIntensitySlider)
-                {
-                    intensity = colorIntensitySlider.value;
-                }
                 return Color.HSVToRGB(hue, saturation, intensity);
             }
             set
@@ -102,39 +88,21 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
-        /// Color saturation slider
+        /// Color saturation and intensity triangle rectangle transform
         /// </summary>
-        public Slider ColorSaturationSlider
+        public RectTransform ColorSaturationIntensityTriangleRectangleTransform
         {
-            get => colorSaturationSlider;
-            set => colorSaturationSlider = value;
+            get => colorSaturationIntensityTriangleRectangleTransform;
+            set => colorSaturationIntensityTriangleRectangleTransform = value;
         }
 
         /// <summary>
-        /// Color saturation slider background color input material controller
+        /// Color saturation and intensity triangle selector controller
         /// </summary>
-        public ColorInputMaterialControllerScript ColorSaturationSliderBackgroundColorInputMaterialController
+        public TriangleSelectorControllerScript ColorSaturationIntensityTriangleSelectorController
         {
-            get => colorSaturationSliderBackgroundColorInputMaterialController;
-            set => colorSaturationSliderBackgroundColorInputMaterialController = value;
-        }
-
-        /// <summary>
-        /// Color intensity slider
-        /// </summary>
-        public Slider ColorIntensitySlider
-        {
-            get => colorIntensitySlider;
-            set => colorIntensitySlider = value;
-        }
-
-        /// <summary>
-        /// Color intensity slider background color input material controller
-        /// </summary>
-        public ColorInputMaterialControllerScript ColorIntensitySliderBackgroundColorInputMaterialController
-        {
-            get => colorIntensitySliderBackgroundColorInputMaterialController;
-            set => colorIntensitySliderBackgroundColorInputMaterialController = value;
+            get => colorSaturationIntensityTriangleSelectorController;
+            set => colorSaturationIntensityTriangleSelectorController = value;
         }
 
         /// <summary>
@@ -165,13 +133,11 @@ namespace ScribblersPad.Controllers
             {
                 colorHueRadialSelector.SetSelectionValueWithoutNotifying(hue);
             }
-            if (colorSaturationSlider)
+            if (colorSaturationIntensityTriangleSelectorController)
             {
-                colorSaturationSlider.SetValueWithoutNotify(saturation);
-            }
-            if (colorIntensitySlider)
-            {
-                colorIntensitySlider.SetValueWithoutNotify(intensity);
+                float u = Mathf.Pow(saturation, 1.0f / 2.2f);
+                float v = 1.0f - Mathf.Pow(intensity, 2.2f);
+                colorSaturationIntensityTriangleSelectorController.SetBarycentricPositionWithoutNotifying(new Vector3(u, v, 1.0f - u - v));
             }
             UpdateVisuals();
         }
@@ -186,17 +152,13 @@ namespace ScribblersPad.Controllers
             {
                 hue = colorHueRadialSelector.SelectionValue;
             }
-            if (colorSaturationSlider)
+            if (colorSaturationIntensityTriangleRectangleTransform)
             {
-                saturation = colorSaturationSlider.value;
+                colorSaturationIntensityTriangleRectangleTransform.localRotation = Quaternion.AngleAxis(hue * 360.0f, Vector3.back);
             }
-            if (colorSaturationSliderBackgroundColorInputMaterialController)
+            if (hueMaterialInputController)
             {
-                colorSaturationSliderBackgroundColorInputMaterialController.Color = Color.HSVToRGB(hue, 1.0f, 1.0f);
-            }
-            if (colorIntensitySliderBackgroundColorInputMaterialController)
-            {
-                colorIntensitySliderBackgroundColorInputMaterialController.Color = Color.HSVToRGB(hue, saturation, 1.0f);
+                hueMaterialInputController.Hue = hue;
             }
             if (colorPreviewImage)
             {
@@ -263,45 +225,27 @@ namespace ScribblersPad.Controllers
                 colorHueRadialSelector.OnSelectionValueChanged += (newSelectionValue) =>
                 {
                     Color.RGBToHSV(color, out _, out float saturation, out float intensity);
-                    if (colorSaturationSlider)
-                    {
-                        saturation = colorSaturationSlider.value;
-                    }
-                    if (colorIntensitySlider)
-                    {
-                        intensity = colorIntensitySlider.value;
-                    }
                     color = Color.HSVToRGB(newSelectionValue, saturation, intensity);
                     UpdateVisuals();
                 };
-                colorSaturationSlider.onValueChanged.AddListener((newValue) =>
+                if (colorSaturationIntensityTriangleSelectorController)
                 {
-                    Color.RGBToHSV(color, out float hue, out float _, out float intensity);
-                    if (colorHueRadialSelector)
+                    colorSaturationIntensityTriangleSelectorController.OnBarycentricPositionChanged += (newBarycentricPosition) =>
                     {
-                        hue = colorHueRadialSelector.SelectionValue;
-                    }
-                    if (colorIntensitySlider)
-                    {
-                        intensity = colorIntensitySlider.value;
-                    }
-                    color = Color.HSVToRGB(hue, newValue, intensity);
-                    UpdateVisuals();
-                });
-                colorIntensitySlider.onValueChanged.AddListener((newValue) =>
+                        float saturation = Mathf.Pow(newBarycentricPosition.x, 1.0f / 2.2f);
+                        float intensity = Mathf.Pow(1.0f - newBarycentricPosition.y, 2.2f);
+                        color = Color.HSVToRGB(colorHueRadialSelector.SelectionValue, saturation, intensity);
+                        UpdateVisuals();
+                    };
+                }
+                else
                 {
-                    Color.RGBToHSV(color, out float hue, out float saturation, out _);
-                    if (colorHueRadialSelector)
-                    {
-                        hue = colorHueRadialSelector.SelectionValue;
-                    }
-                    if (colorSaturationSlider)
-                    {
-                        saturation = colorSaturationSlider.value;
-                    }
-                    color = Color.HSVToRGB(hue, saturation, newValue);
-                    UpdateVisuals();
-                });
+                    Debug.LogError("Please assign a color saturation and intensity triangle selector to this component.", this);
+                }
+            }
+            else
+            {
+                Debug.LogError("Please assign a color hue radial selector to this component.", this);
             }
         }
     }

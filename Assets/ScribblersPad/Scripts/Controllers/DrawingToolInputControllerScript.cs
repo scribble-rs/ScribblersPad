@@ -220,21 +220,21 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
-        /// Gets invoked when pointer dragging has been started
+        /// Sets selection value without notifying to event listeners
         /// </summary>
-        /// <param name="eventData">Pointer event data</param>
+        /// <param name="selectionValue">Selection value</param>
         public void OnBeginDrag(PointerEventData eventData) => HandleDragging(eventData);
 
         /// <summary>
         /// Gets invoked when pointer is dragging
         /// </summary>
-        /// <param name="eventData"></param>
+        /// <param name="eventData">Pointer event data</param>
         public void OnDrag(PointerEventData eventData) => HandleDragging(eventData);
 
         /// <summary>
-        /// Gets invoked
+        /// Gets invoked when pointer drag has ended
         /// </summary>
-        /// <param name="eventData"></param>
+        /// <param name="eventData">Pointer event data</param>
         public void OnEndDrag(PointerEventData eventData) => HandleDragging(eventData);
 
         /// <summary>
