@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 /// <summary>
 /// Scribble.rs Pad namespace
@@ -7,14 +6,14 @@ using UnityEngine.UI;
 namespace ScribblersPad
 {
     /// <summary>
-    /// An interface that represents a color input material controller
+    /// An interface that represents a hue material input controller
     /// </summary>
-    public interface IColorInputMaterialController : IBehaviour
+    public interface IHueMaterialInputController : IBehaviour
     {
         /// <summary>
-        /// Color
+        /// Hue
         /// </summary>
-        Color Color { get; set; }
+        float Hue { get; set; }
 
         /// <summary>
         /// Image

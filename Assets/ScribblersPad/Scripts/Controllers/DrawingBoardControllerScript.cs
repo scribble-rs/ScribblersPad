@@ -591,6 +591,10 @@ namespace ScribblersPad.Controllers
                 outputDrawCommandQueue.Clear();
                 ClearInternally();
                 ScribblersClientManager.SendClearDrawingBoardGameMessageAsync();
+                if (FindObjectOfType<DrawingToolInputControllerScript>(true) is DrawingToolInputControllerScript drawing_tool_input_controller && (drawing_tool_input_controller.DrawingTool == EDrawingTool.Eraser))
+                {
+                    drawing_tool_input_controller.DrawingTool = EDrawingTool.Pen;
+                }
             }
         }
 

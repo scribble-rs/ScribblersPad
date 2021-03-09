@@ -11,7 +11,7 @@ Scribble.rs Pad is a third party Scribble.rs client that is being developed in t
 ### Requirements
 
 - Git
-- Unity Game Engine 2020.2.0f1 or higher
+- Unity Game Engine 2020.2.6f1 or newer
 
 ### Steps
 

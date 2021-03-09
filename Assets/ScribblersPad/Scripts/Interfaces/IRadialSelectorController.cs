@@ -27,6 +27,11 @@ namespace ScribblersPad
         float Radius { get; set; }
 
         /// <summary>
+        /// Is rotating selection
+        /// </summary>
+        bool IsRotatingSelection { get; set; }
+
+        /// <summary>
         /// Selection rectangle transform
         /// </summary>
         RectTransform SelectionRectangleTransform { get; set; }

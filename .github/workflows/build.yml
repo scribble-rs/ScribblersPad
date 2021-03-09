@@ -25,9 +25,9 @@ jobs:
         uses: kuler90/build-unity@v1
         with:
           build-target: Android
-          build-path: ./ScribblersPad.apk
+          build-path: ./scribble.rs-unity-client.apk
       - name: Upload build
         uses: actions/upload-artifact@v2
         with:
-          name: ScribblersPad.apk
-          path: ./ScribblersPad.apk
+          name: scribble.rs-unity-client.apk
+          path: ./scribble.rs-unity-client.apk

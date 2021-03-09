@@ -7,36 +7,41 @@ using UnityEngine.UI;
 namespace ScribblersPad.Controllers
 {
     /// <summary>
-    /// A class that describes a color input material controller script
+    /// A class that describes a hue material input controller script
     /// </summary>
     [RequireComponent(typeof(Image))]
     [ExecuteInEditMode]
-    public class ColorInputMaterialControllerScript : MonoBehaviour, IColorInputMaterialController
+    public class HueMaterialInputControllerScript : MonoBehaviour, IHueMaterialInputController
     {
         /// <summary>
-        /// "InputColor" name ID
+        /// "Hue" name ID
         /// </summary>
-        private static readonly int inputColorNameID = Shader.PropertyToID("InputColor");
+        private static readonly int hueID = Shader.PropertyToID("Hue");
 
         /// <summary>
-        /// Color
+        /// Hue
         /// </summary>
         [SerializeField]
-        private Color color = Color.white;
+        private float hue = 0.0f;
 
         /// <summary>
-        /// Color
+        /// Hue
         /// </summary>
-        public Color Color
+        public float Hue
         {
-            get => color;
-            set => color = value;
+            get => hue;
+            set => hue = Mathf.Repeat(value, 1.0f - float.Epsilon);
         }
 
         /// <summary>
         /// Image
         /// </summary>
         public Image Image { get; private set; }
+
+        /// <summary>
+        /// Gets invoked when script gets validated
+        /// </summary>
+        private void OnValidate() => hue = Mathf.Repeat(hue, 1.0f - float.Epsilon);
 
         /// <summary>
         /// Gets invoked when script has been started
@@ -63,7 +68,7 @@ namespace ScribblersPad.Controllers
             }
             if (Image)
             {
-                Image.material.SetColor(inputColorNameID, color);
+                Image.material.SetFloat(hueID, hue);
             }
         }
     }

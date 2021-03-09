@@ -28,6 +28,12 @@ namespace ScribblersPad.Controllers
         private float radius = 128.0f;
 
         /// <summary>
+        /// Is rotating selection
+        /// </summary>
+        [SerializeField]
+        private bool isRotatingSelection;
+
+        /// <summary>
         /// Selection rectangle rectangle transform
         /// </summary>
         [SerializeField]
@@ -75,6 +81,15 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
+        /// Is rotating selection
+        /// </summary>
+        public bool IsRotatingSelection
+        {
+            get => isRotatingSelection;
+            set => isRotatingSelection = value;
+        }
+
+        /// <summary>
         /// Selection rectangle transform
         /// </summary>
         public RectTransform SelectionRectangleTransform
@@ -94,7 +109,7 @@ namespace ScribblersPad.Controllers
         /// <param name="eventData">Pointer event data</param>
         private void HandlePointerEvent(PointerEventData eventData)
         {
-            if (RectangleTransform && selectionRectangleTransform)
+            if (RectangleTransform)
             {
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle(RectangleTransform, eventData.position, null, out Vector2 local_point))
                 {
@@ -102,6 +117,7 @@ namespace ScribblersPad.Controllers
                 }
             }
         }
+
         /// <summary>
         /// Sets selection value without notifying to event listeners
         /// </summary>
@@ -171,7 +187,12 @@ namespace ScribblersPad.Controllers
         {
             if (selectionRectangleTransform)
             {
-                selectionRectangleTransform.anchoredPosition = new Vector2(Mathf.Sin(selectionValue * 2.0f * Mathf.PI) * radius, Mathf.Cos(selectionValue * 2.0f * Mathf.PI) * radius);
+                float alpha = selectionValue * 2.0f * Mathf.PI;
+                selectionRectangleTransform.anchoredPosition = new Vector2(Mathf.Sin(alpha) * radius, Mathf.Cos(alpha) * radius);
+                if (isRotatingSelection)
+                {
+                    selectionRectangleTransform.localRotation = Quaternion.AngleAxis(selectionValue * 360.0f, Vector3.back);
+                }
             }
         }
     }
