@@ -2,6 +2,7 @@ using ScribblersSharp;
 using UnityEngine;
 using UnityEngine.Events;
 using UnitySceneLoaderManager;
+using UnityTiming.Data;
 
 /// <summary>
 /// Scribble.rs Pad controllers namespace
@@ -12,12 +13,18 @@ namespace ScribblersPad.Controllers
     /// A class that describes a lobby connection state UI layout controller script
     /// </summary>
     [RequireComponent(typeof(Animator))]
-    public class LobbyConnectionStateUILayoutControllerScript : AScribblersClientControllerScript
+    public class LobbyConnectionStateUILayoutControllerScript : AScribblersClientControllerScript, ILobbyConnectionStateUILayoutController
     {
         /// <summary>
         /// Lobby connection state hash
         /// </summary>
         private static readonly int lobbyConnectionStateHash = Animator.StringToHash("lobbyConnectionState");
+
+        /// <summary>
+        /// Timeout timing
+        /// </summary>
+        [SerializeField]
+        private TimingData timeoutTiming = new TimingData(3.0f);
 
         /// <summary>
         /// Gets invoked when a client starts to connect to a lobby
@@ -49,6 +56,15 @@ namespace ScribblersPad.Controllers
         private ELobbyConnectionState lobbyConnectionState = ELobbyConnectionState.Connecting;
 
         /// <summary>
+        /// Timeout timing
+        /// </summary>
+        public TimingData TimeoutTiming
+        {
+            get => timeoutTiming;
+            set => timeoutTiming = value;
+        }
+
+        /// <summary>
         /// Lobby connection state
         /// </summary>
         public ELobbyConnectionState LobbyConnectionState
@@ -56,7 +72,7 @@ namespace ScribblersPad.Controllers
             get => lobbyConnectionState;
             private set
             {
-                if ((lobbyConnectionState != value) && (lobbyConnectionState != ELobbyConnectionState.Kicked))
+                if ((lobbyConnectionState != value) && (lobbyConnectionState != ELobbyConnectionState.Disconnected) && (lobbyConnectionState != ELobbyConnectionState.Kicked))
                 {
                     lobbyConnectionState = value;
                     switch (lobbyConnectionState)
@@ -199,6 +215,10 @@ namespace ScribblersPad.Controllers
                         LobbyConnectionState = ELobbyConnectionState.Disconnected;
                         break;
                 }
+            }
+            if ((lobbyConnectionState == ELobbyConnectionState.Connecting) && (timeoutTiming.ProceedUpdate(false, false) > 0))
+            {
+                LobbyConnectionState = ELobbyConnectionState.Disconnected;
             }
         }
     }

@@ -13108,7 +13108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 227769684730455535, guid: d9e1b7de3663b5b4a8e06a7420e37d77, type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 227769684730455535, guid: d9e1b7de3663b5b4a8e06a7420e37d77, type: 3}
       propertyPath: m_AnchorMax.x
@@ -13635,7 +13635,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 8
   m_TargetDisplay: 0
 --- !u!224 &1772103853
 RectTransform:
@@ -13650,7 +13650,7 @@ RectTransform:
   m_Children:
   - {fileID: 850806995}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -13670,12 +13670,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isKeepingEventsActiveWhenDisabled: 0
+  timeoutTiming:
+    tickTime: 3
+    elapsedTickTime: 0
   onLobbyConnectionStarted:
     m_PersistentCalls:
       m_Calls: []
   onLobbyConnected:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1772103855}
+        m_TargetAssemblyTypeName: UnityTiming.Controllers.ClockControllerScript,
+          UnityTiming
+        m_MethodName: set_IsRunning
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onLobbyDisconnected:
     m_PersistentCalls:
       m_Calls:
@@ -16018,7 +16034,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1688749174451820154, guid: 842646a0158522b44b45e7a3782c840d, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1688749174451820154, guid: 842646a0158522b44b45e7a3782c840d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -16502,7 +16518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8554155680249668863, guid: 37b8066886b53fc4699bd84ef5a6f215, type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 8554155680249668863, guid: 37b8066886b53fc4699bd84ef5a6f215, type: 3}
       propertyPath: m_AnchorMax.x

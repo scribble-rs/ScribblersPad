@@ -910,7 +910,7 @@ namespace ScribblersPad.Managers
         /// <summary>
         /// Gets invoked when script has been started
         /// </summary>
-        private async void Start()
+        private void Start()
         {
             SaveGame<SaveGameData> save_game = SaveGames.Get<SaveGameData>();
             if (save_game == null)
@@ -926,14 +926,11 @@ namespace ScribblersPad.Managers
                 }
                 if (string.IsNullOrWhiteSpace(save_game.Data.LobbyID.Trim()))
                 {
-                    if (!await CreateLobbyAsync(username, save_game.Data.LobbyLanguage, save_game.Data.IsLobbyPublic, save_game.Data.MaximalPlayerCount, save_game.Data.DrawingTime, save_game.Data.RoundCount, save_game.Data.CustomWords.Split(','), save_game.Data.CustomWordsChance, save_game.Data.IsVotekickingEnabled, save_game.Data.PlayersPerIPLimit))
-                    {
-                        SceneLoaderManager.LoadScene("MainMenuScene");
-                    }
+                    _ = CreateLobbyAsync(username, save_game.Data.LobbyLanguage, save_game.Data.IsLobbyPublic, save_game.Data.MaximalPlayerCount, save_game.Data.DrawingTime, save_game.Data.RoundCount, save_game.Data.CustomWords.Split(','), save_game.Data.CustomWordsChance, save_game.Data.IsVotekickingEnabled, save_game.Data.PlayersPerIPLimit);
                 }
-                else if (!await EnterLobbyAsync(save_game.Data.LobbyID.Trim(), username))
+                else
                 {
-                    SceneLoaderManager.LoadScene("MainMenuScene");
+                    _ = EnterLobbyAsync(save_game.Data.LobbyID.Trim(), username);
                 }
             }
         }
