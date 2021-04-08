@@ -6,7 +6,7 @@ namespace ScribblersPad.Managers
     /// <summary>
     /// An abstract class that describes a singleton manager script
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Manager script type</typeparam>
     public abstract class ASingletonManagerScript<T> : AManagerScript<T>, ISingletonManager where T : AManagerScript<T>
     {
         /// <summary>

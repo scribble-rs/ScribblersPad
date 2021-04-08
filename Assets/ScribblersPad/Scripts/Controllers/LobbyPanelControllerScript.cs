@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnitySaveGame;
 using UnityTranslator.Objects;
 
@@ -29,40 +28,43 @@ namespace ScribblersPad.Controllers
         private static readonly string defaultPlayerCountStringFormat = "{0}/{1}";
 
         /// <summary>
+        /// "languageIndex" hash
+        /// </summary>
+        private static readonly int languageIndexHash = Animator.StringToHash("languageIndex");
+
+        /// <summary>
+        /// "isVotekickingEnabled" hash
+        /// </summary>
+        private static readonly int isVotekickingEnabledHash = Animator.StringToHash("isVotekickingEnabled");
+
+        /// <summary>
+        /// "isUsingCustomWords" hash
+        /// </summary>
+        private static readonly int isUsingCustomWordsHash = Animator.StringToHash("isUsingCustomWords");
+
+        /// <summary>
         /// Language sprites
         /// </summary>
         [SerializeField]
         private LanguageSpriteData[] languageSprites = Array.Empty<LanguageSpriteData>();
 
         /// <summary>
-        /// Unknown language sprite
+        /// Language image animator
         /// </summary>
         [SerializeField]
-        private Sprite unknownLanguageSprite = default;
+        private Animator languageImageAnimator = default;
 
         /// <summary>
-        /// Is votekicking disabled sprite
+        /// Is votekicking enabled image animator
         /// </summary>
         [SerializeField]
-        private Sprite isVotekickingDisabledSprite = default;
+        private Animator isVotekickingEnabledImageAnimator = default;
 
         /// <summary>
-        /// Is votekicking enabled sprite
+        /// Is using custom words image animator
         /// </summary>
         [SerializeField]
-        private Sprite isVotekickingEnabledSprite = default;
-
-        /// <summary>
-        /// Is not using custom words sprite
-        /// </summary>
-        [SerializeField]
-        private Sprite isNotUsingCustomWordsSprite = default;
-
-        /// <summary>
-        /// Is using custom words sprite
-        /// </summary>
-        [SerializeField]
-        private Sprite isUsingCustomWordsSprite = default;
+        private Animator isUsingCustomWordsImageAnimator = default;
 
         /// <summary>
         /// Current round string format
@@ -89,24 +91,6 @@ namespace ScribblersPad.Controllers
         private StringTranslationObjectScript playerCountStringFormatStringTranslation = default;
 
         /// <summary>
-        /// Language image
-        /// </summary>
-        [SerializeField]
-        private Image languageImage = default;
-
-        /// <summary>
-        /// Is votekicking enabled image
-        /// </summary>
-        [SerializeField]
-        private Image isVotekickingEnabledImage = default;
-
-        /// <summary>
-        /// Is using custom words image
-        /// </summary>
-        [SerializeField]
-        private Image isUsingCustomWordsImage = default;
-
-        /// <summary>
         /// Current round text
         /// </summary>
         [SerializeField]
@@ -124,48 +108,30 @@ namespace ScribblersPad.Controllers
         private Dictionary<ELanguage, Sprite> languageSpriteLookup;
 
         /// <summary>
-        /// Unknown language sprite
+        /// Language image animator
         /// </summary>
-        public Sprite UnknownLanguageSprite
+        public Animator LanguageImageAnimator
         {
-            get => unknownLanguageSprite;
-            set => unknownLanguageSprite = value;
+            get => languageImageAnimator;
+            set => languageImageAnimator = value;
         }
 
         /// <summary>
-        /// Is votekicking disabled sprite
+        /// Is votekicking enabled image animator
         /// </summary>
-        public Sprite IsVotekickingDisabledSprite
+        public Animator IsVotekickingEnabledImageAnimator
         {
-            get => isVotekickingDisabledSprite;
-            set => isVotekickingDisabledSprite = value;
+            get => isVotekickingEnabledImageAnimator;
+            set => isVotekickingEnabledImageAnimator = value;
         }
 
         /// <summary>
-        /// Is votekicking enabled sprite
+        /// Is using custom words image animator
         /// </summary>
-        public Sprite IsVotekickingEnabledSprite
+        public Animator IsUsingCustomWordsImageAnimator
         {
-            get => isVotekickingEnabledSprite;
-            set => isVotekickingEnabledSprite = value;
-        }
-
-        /// <summary>
-        /// Is not using custom words sprite
-        /// </summary>
-        public Sprite IsNotUsingCustomWordsSprite
-        {
-            get => isNotUsingCustomWordsSprite;
-            set => isNotUsingCustomWordsSprite = value;
-        }
-
-        /// <summary>
-        /// Is using custom words sprite
-        /// </summary>
-        public Sprite IsUsingCustomWordsSprite
-        {
-            get => isUsingCustomWordsSprite;
-            set => isUsingCustomWordsSprite = value;
+            get => isUsingCustomWordsImageAnimator;
+            set => isUsingCustomWordsImageAnimator = value;
         }
 
         /// <summary>
@@ -202,33 +168,6 @@ namespace ScribblersPad.Controllers
         {
             get => playerCountStringFormatStringTranslation;
             set => playerCountStringFormatStringTranslation = value;
-        }
-
-        /// <summary>
-        /// Language image
-        /// </summary>
-        public Image LanguageImage
-        {
-            get => languageImage;
-            set => languageImage = value;
-        }
-
-        /// <summary>
-        /// Is votekicking enabled image
-        /// </summary>
-        public Image IsVotekickingEnabledImage
-        {
-            get => isVotekickingEnabledImage;
-            set => isVotekickingEnabledImage = value;
-        }
-
-        /// <summary>
-        /// Is using custom words image
-        /// </summary>
-        public Image OsUsingCustomWordsImage
-        {
-            get => isUsingCustomWordsImage;
-            set => isUsingCustomWordsImage = value;
         }
 
         /// <summary>
@@ -291,18 +230,6 @@ namespace ScribblersPad.Controllers
         {
             LobbyView = lobbyView ?? throw new ArgumentNullException(nameof(lobbyView));
             InitializeLanguageTranslations();
-            if (languageImage)
-            {
-                languageImage.sprite = languageSpriteLookup.ContainsKey(lobbyView.Language) ? languageSpriteLookup[lobbyView.Language] : unknownLanguageSprite;
-            }
-            if (isVotekickingEnabledImage)
-            {
-                isVotekickingEnabledImage.sprite = lobbyView.IsVotekickingEnabled ? isVotekickingEnabledSprite : isVotekickingDisabledSprite;
-            }
-            if (isUsingCustomWordsImage)
-            {
-                isUsingCustomWordsImage.sprite = lobbyView.IsUsingCustomWords ? isUsingCustomWordsSprite : isNotUsingCustomWordsSprite;
-            }
             if (currentRoundText)
             {
                 currentRoundText.text = string.Format(currentRoundStringFormatStringTranslation ? currentRoundStringFormatStringTranslation.ToString() : currentRoundStringFormat, lobbyView.RoundCount, lobbyView.MaximalRoundCount);
@@ -342,6 +269,22 @@ namespace ScribblersPad.Controllers
             if (playerCountStringFormatStringTranslation)
             {
                 playerCountStringFormat = playerCountStringFormatStringTranslation.ToString();
+            }
+        }
+
+        private void Update()
+        {
+            if (languageImageAnimator)
+            {
+                languageImageAnimator.SetInteger(languageIndexHash, (int)((LobbyView == null) ? ELanguage.Invalid : LobbyView.Language));
+            }
+            if (isVotekickingEnabledImageAnimator)
+            {
+                isVotekickingEnabledImageAnimator.SetBool(isVotekickingEnabledHash, (LobbyView != null) && LobbyView.IsVotekickingEnabled);
+            }
+            if (isUsingCustomWordsImageAnimator)
+            {
+                isUsingCustomWordsImageAnimator.SetBool(isUsingCustomWordsHash, (LobbyView != null) && LobbyView.IsUsingCustomWords);
             }
         }
     }

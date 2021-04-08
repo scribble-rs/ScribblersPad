@@ -125,14 +125,13 @@ namespace ScribblersPad.Controllers
         /// <param name="lobby">Lobby</param>
         private void UpdateVisuals(ILobby lobby)
         {
-            float value = CurrentTime / lobby.CurrentDrawingTime;
             if (currentTimeText)
             {
-                currentTimeText.text = string.Format(currentTimeInSecondsStringFormatStringTranslation ? currentTimeInSecondsStringFormatStringTranslation.ToString() : currentTimeInSecondsStringFormat, Mathf.RoundToInt(CurrentTime));
+                currentTimeText.text = string.Format(currentTimeInSecondsStringFormatStringTranslation ? currentTimeInSecondsStringFormatStringTranslation.ToString() : currentTimeInSecondsStringFormat, Mathf.FloorToInt(CurrentTime));
             }
             if (timeProgressImage)
             {
-                timeProgressImage.fillAmount = value;
+                timeProgressImage.fillAmount = (Mathf.Floor(CurrentTime * 2.0f) * 500.0f) / lobby.CurrentDrawingTime;
             }
         }
 

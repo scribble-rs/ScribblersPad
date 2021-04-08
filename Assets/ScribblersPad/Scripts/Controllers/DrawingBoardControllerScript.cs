@@ -590,7 +590,7 @@ namespace ScribblersPad.Controllers
                 inputDrawCommandQueue.Clear();
                 outputDrawCommandQueue.Clear();
                 ClearInternally();
-                ScribblersClientManager.SendClearDrawingBoardGameMessageAsync();
+                ScribblersClientManager.SendClearDrawingBoardGameMessage();
                 if (FindObjectOfType<DrawingToolInputControllerScript>(true) is DrawingToolInputControllerScript drawing_tool_input_controller && (drawing_tool_input_controller.DrawingTool == EDrawingTool.Eraser))
                 {
                     drawing_tool_input_controller.DrawingTool = EDrawingTool.Pen;
@@ -636,10 +636,10 @@ namespace ScribblersPad.Controllers
                         switch (draw_command.Type)
                         {
                             case EDrawCommandType.Fill:
-                                ScribblersClientManager.SendFillGameMessageAsync(draw_command.From.x, draw_command.From.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b));
+                                ScribblersClientManager.SendFillGameMessage(draw_command.From.x, draw_command.From.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b));
                                 break;
                             case EDrawCommandType.Line:
-                                ScribblersClientManager.SendLineGameMessageAsync(draw_command.From.x, draw_command.From.y, draw_command.To.x, draw_command.To.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b), draw_command.LineWidth);
+                                ScribblersClientManager.SendLineGameMessage(draw_command.From.x, draw_command.From.y, draw_command.To.x, draw_command.To.y, System.Drawing.Color.FromArgb(0xFF, draw_command.Color.r, draw_command.Color.g, draw_command.Color.b), draw_command.LineWidth);
                                 break;
                         }
                         is_drawing = is_drawing || (outputDrawCommandQueue.Count > 0);

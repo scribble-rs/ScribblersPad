@@ -116,18 +116,18 @@ namespace ScribblersPad.Controllers
             if (WordText)
             {
                 StringBuilder word_string_builder = new StringBuilder();
-                bool is_first = true;
+                //bool is_first = true;
                 foreach (IWordHint word_hint in wordHints)
                 {
-                    if (is_first)
-                    {
-                        is_first = false;
-                    }
-                    else
-                    {
-                        word_string_builder.Append(' ');
-                    }
-                    word_string_builder.Append((word_hint.Character == '\0') ? "_" : $"<u>{ word_hint.Character }</u>");
+                    //if (is_first)
+                    //{
+                    //    is_first = false;
+                    //}
+                    //else
+                    //{
+                    //    word_string_builder.Append(' ');
+                    //}
+                    word_string_builder.Append((word_hint.Character == '\0') ? '_' : word_hint.Character);
                 }
                 WordText.text = word_string_builder.ToString();
                 word_string_builder.Clear();

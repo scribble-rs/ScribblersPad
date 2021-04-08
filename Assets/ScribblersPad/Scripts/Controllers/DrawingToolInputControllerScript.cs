@@ -272,7 +272,7 @@ namespace ScribblersPad.Controllers
         {
             if ((touchScreenKeyboard != null) && (touchScreenKeyboard.status == TouchScreenKeyboard.Status.Done))
             {
-                ScribblersClientManager.SendMessageGameMessageAsync(touchScreenKeyboard.text);
+                ScribblersClientManager.SendMessageGameMessage(touchScreenKeyboard.text);
                 touchScreenKeyboard = null;
             }
         }

@@ -39,6 +39,12 @@ namespace ScribblersPad.Controllers
         private Toggle isUsingSecureProtocolsToggle = default;
 
         /// <summary>
+        /// Is allowed to use insecure protocols toggle
+        /// </summary>
+        [SerializeField]
+        private Toggle isAllowedToUseInsecureProtocolsToggle = default;
+
+        /// <summary>
         /// Username input field
         /// </summary>
         [SerializeField]
@@ -117,9 +123,15 @@ namespace ScribblersPad.Controllers
         private UnityEvent<float> onPingSucceeded = default;
 
         /// <summary>
+        /// Gets invoked when pinging an insecure host was successful
+        /// </summary>
+        [SerializeField]
+        private UnityEvent<float> onInsecurePingSucceeded = default;
+
+        /// <summary>
         /// Test connection task
         /// </summary>
-        private Task<bool> testConnectionTask;
+        private Task<IServerStatistics> testConnectionTask;
 
         /// <summary>
         /// Elapsed test connection task time
@@ -151,6 +163,15 @@ namespace ScribblersPad.Controllers
         {
             get => isUsingSecureProtocolsToggle;
             set => isUsingSecureProtocolsToggle = value;
+        }
+
+        /// <summary>
+        /// Is allowed to use insecure protocols toggle
+        /// </summary>
+        public Toggle IsAllowedToUseInsecureProtocolsToggle
+        {
+            get => isAllowedToUseInsecureProtocolsToggle;
+            set => isAllowedToUseInsecureProtocolsToggle = value;
         }
 
         /// <summary>
@@ -259,11 +280,16 @@ namespace ScribblersPad.Controllers
         public event PingSucceededDelegate OnPingSucceeded;
 
         /// <summary>
+        /// Gets invoked when pinging an insecure host was successful
+        /// </summary>
+        public event InsecurePingSucceededDelegate OnInsecurePingSucceeded;
+
+        /// <summary>
         /// Tests connection
         /// </summary>
         public void TestConnection()
         {
-            if (hostInputField && isUsingSecureProtocolsToggle)
+            if (hostInputField && isUsingSecureProtocolsToggle && isAllowedToUseInsecureProtocolsToggle)
             {
                 if (testConnectionTask != null)
                 {
@@ -278,21 +304,20 @@ namespace ScribblersPad.Controllers
                 if (save_game != null)
                 {
                     string host = hostInputField.text.Trim();
-                    string user_session_id = save_game.Data.UserSessionID;
+                    string user_session_id = save_game.Data.GetUserSessionID(host);
                     bool is_using_secure_protocols = isUsingSecureProtocolsToggle.isOn;
+                    bool is_allowed_to_use_insecure_protocols = isAllowedToUseInsecureProtocolsToggle.isOn;
                     testConnectionTask = string.IsNullOrWhiteSpace(host) ?
-                        Task.FromResult(false) :
+                        Task.FromResult<IServerStatistics>(null) :
                         Task.Run
                         (
                             async () =>
                             {
-                                bool result = false;
+                                IServerStatistics result = null;
                                 try
                                 {
-                                    using (IScribblersClient scribblers_client = Clients.Create(host, user_session_id, is_using_secure_protocols))
-                                    {
-                                        result = await scribblers_client.GetServerStatisticsAsync() != null;
-                                    }
+                                    using IScribblersClient scribblers_client = Clients.Create(host, user_session_id, is_using_secure_protocols, is_allowed_to_use_insecure_protocols);
+                                    result = await scribblers_client.GetServerStatisticsAsync();
                                 }
                                 catch (Exception e)
                                 {
@@ -316,10 +341,12 @@ namespace ScribblersPad.Controllers
         /// </summary>
         public void ResetHostToDefault()
         {
-            if (hostInputField && isUsingSecureProtocolsToggle)
+            if (hostInputField && isUsingSecureProtocolsToggle && isAllowedToUseInsecureProtocolsToggle)
             {
                 hostInputField.SetTextWithoutNotify(ScribblersDefaultsObjectScript.defaultHost);
                 isUsingSecureProtocolsToggle.SetIsOnWithoutNotify(true);
+                isAllowedToUseInsecureProtocolsToggle.SetIsOnWithoutNotify(false);
+                isAllowedToUseInsecureProtocolsToggle.interactable = true;
                 TestConnection();
             }
         }
@@ -339,6 +366,10 @@ namespace ScribblersPad.Controllers
                 if (isUsingSecureProtocolsToggle)
                 {
                     save_game.Data.IsUsingSecureProtocols = isUsingSecureProtocolsToggle.isOn;
+                }
+                if (isAllowedToUseInsecureProtocolsToggle)
+                {
+                    save_game.Data.IsAllowedToUseInsecureProtocols = isAllowedToUseInsecureProtocolsToggle.isOn;
                 }
                 if (usernameInputField)
                 {
@@ -412,6 +443,15 @@ namespace ScribblersPad.Controllers
                 else
                 {
                     Debug.LogError("Please assign an is using secure protocols toggle to this component.", this);
+                }
+                if (isAllowedToUseInsecureProtocolsToggle)
+                {
+                    isAllowedToUseInsecureProtocolsToggle.SetIsOnWithoutNotify(save_game.Data.IsAllowedToUseInsecureProtocols);
+                    isAllowedToUseInsecureProtocolsToggle.interactable = save_game.Data.IsUsingSecureProtocols;
+                }
+                else
+                {
+                    Debug.LogError("Please assign an is allowed to use insecure protocols toggle to this component.", this);
                 }
                 if (usernameInputField)
                 {
@@ -517,16 +557,7 @@ namespace ScribblersPad.Controllers
                         OnPingFailed?.Invoke();
                         break;
                     case TaskStatus.RanToCompletion:
-                        if (testConnectionTask.Result)
-                        {
-                            testConnectionTask = null;
-                            if (onPingSucceeded != null)
-                            {
-                                onPingSucceeded.Invoke(elapsedTestConnectionTaskTime);
-                            }
-                            OnPingSucceeded?.Invoke(elapsedTestConnectionTaskTime);
-                        }
-                        else
+                        if (testConnectionTask.Result == null)
                         {
                             testConnectionTask = null;
                             if (onPingFailed != null)
@@ -534,6 +565,26 @@ namespace ScribblersPad.Controllers
                                 onPingFailed.Invoke();
                             }
                             OnPingFailed?.Invoke();
+                        }
+                        else
+                        {
+                            if (testConnectionTask.Result.IsConnectionSecure)
+                            {
+                                if (onPingSucceeded != null)
+                                {
+                                    onPingSucceeded.Invoke(elapsedTestConnectionTaskTime);
+                                }
+                                OnPingSucceeded?.Invoke(elapsedTestConnectionTaskTime);
+                            }
+                            else
+                            {
+                                if (onInsecurePingSucceeded != null)
+                                {
+                                    onInsecurePingSucceeded.Invoke(elapsedTestConnectionTaskTime);
+                                }
+                                OnInsecurePingSucceeded?.Invoke(elapsedTestConnectionTaskTime);
+                            }
+                            testConnectionTask = null;
                         }
                         break;
                     default:

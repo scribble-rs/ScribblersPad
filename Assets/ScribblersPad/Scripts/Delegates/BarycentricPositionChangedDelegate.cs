@@ -6,7 +6,7 @@
 namespace ScribblersPad
 {
     /// <summary>
-    /// used to signal when barycentric position has been changed
+    /// Used to signal when barycentric position has been changed
     /// </summary>
     /// <param name="newBarycentricPosition">New barycentric position</param>
     public delegate void BarycentricPositionChangedDelegate(Vector3 newBarycentricPosition);

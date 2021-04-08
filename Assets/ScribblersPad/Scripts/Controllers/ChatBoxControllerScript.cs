@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityTranslator.Objects;
 
 /// <summary>
 /// Scribble.rs Pad controllers namespace
@@ -67,6 +68,9 @@ namespace ScribblersPad.Controllers
         /// </summary>
         [SerializeField]
         private GameObject systemMessageChatBoxElementAsset = default;
+
+        [SerializeField]
+        private GameObject chatPreviewMessageChatBoxElementAsset = default;
 
         /// <summary>
         /// Chat box element parent rectangle transform
@@ -452,6 +456,7 @@ namespace ScribblersPad.Controllers
             ValidateChatBoxElement(ref correctlyGuessedChatBoxElementAsset);
             ValidateChatBoxElement(ref ownCorrectlyGuessedChatBoxElementAsset);
             ValidateChatBoxElement(ref systemMessageChatBoxElementAsset);
+            ValidateChatBoxElement(ref chatPreviewMessageChatBoxElementAsset);
         }
 
         /// <summary>
@@ -471,6 +476,10 @@ namespace ScribblersPad.Controllers
             if (!chatBoxElementParentRectangleTransform)
             {
                 Debug.LogError("Please assign a chat box element parent rectangle transform to this component.", this);
+            }
+            if (chatPreviewMessageChatBoxElementAsset)
+            {
+                AddChatBoxElement(chatPreviewMessageChatBoxElementAsset, string.Empty, string.Empty);
             }
         }
     }

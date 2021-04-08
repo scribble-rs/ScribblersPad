@@ -112,8 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da7fd3713802d9c45ad418b86a6653f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  okTranslation: {fileID: 11400000, guid: dd1014faf5b7efc4a9c0f55ca0d50e11, type: 2}
-  cancelTranslation: {fileID: 11400000, guid: e6726c1f196c5fb47bbe6190a1aaa757, type: 2}
-  yesTranslation: {fileID: 11400000, guid: bc6d829fb8cf537449523ec6cd604c0f, type: 2}
-  noTranslation: {fileID: 11400000, guid: 874f2ef8d7518c940be18a40ad6f0555, type: 2}
+  dialogDestructionTime: 0.125
+  okStringTranslation: {fileID: 11400000, guid: dd1014faf5b7efc4a9c0f55ca0d50e11, type: 2}
+  cancelStringTranslation: {fileID: 11400000, guid: e6726c1f196c5fb47bbe6190a1aaa757, type: 2}
+  yesStringTranslation: {fileID: 11400000, guid: bc6d829fb8cf537449523ec6cd604c0f, type: 2}
+  noStringTranslation: {fileID: 11400000, guid: 874f2ef8d7518c940be18a40ad6f0555, type: 2}
   dialogPanelAsset: {fileID: 3884894676705957466, guid: 549e380a666108f45a915ab7824c0e4c, type: 3}

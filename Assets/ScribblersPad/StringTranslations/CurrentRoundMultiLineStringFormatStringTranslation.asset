@@ -14,12 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stringTranslation:
     strings:
-    - stringValue: 'Round:
-
-        {0}/{1}'
+    - stringValue: 'Round: {0}/{1}'
       language: 10
-    - stringValue: 'Runde:
-
-        {0}/{1}'
+    - stringValue: 'Runde: {0}/{1}'
       language: 15
   comment: 

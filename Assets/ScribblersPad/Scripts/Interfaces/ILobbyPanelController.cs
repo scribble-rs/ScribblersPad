@@ -1,7 +1,6 @@
 ﻿using ScribblersSharp;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityTranslator.Objects;
 
 /// <summary>
@@ -15,29 +14,19 @@ namespace ScribblersPad
     public interface ILobbyPanelController : IBehaviour
     {
         /// <summary>
-        /// Unknown language sprite
+        /// Language image animator
         /// </summary>
-        Sprite UnknownLanguageSprite { get; set; }
+        Animator LanguageImageAnimator { get; set; }
 
         /// <summary>
-        /// Is votekicking disabled sprite
+        /// Is votekicking enabled image animator
         /// </summary>
-        Sprite IsVotekickingDisabledSprite { get; set; }
+        Animator IsVotekickingEnabledImageAnimator { get; set; }
 
         /// <summary>
-        /// Is votekicking enabled sprite
+        /// Is using custom words image animator
         /// </summary>
-        Sprite IsVotekickingEnabledSprite { get; set; }
-
-        /// <summary>
-        /// Is not using custom words sprite
-        /// </summary>
-        Sprite IsNotUsingCustomWordsSprite { get; set; }
-
-        /// <summary>
-        /// Is using custom words sprite
-        /// </summary>
-        Sprite IsUsingCustomWordsSprite { get; set; }
+        Animator IsUsingCustomWordsImageAnimator { get; set; }
 
         /// <summary>
         /// Current round string format
@@ -58,21 +47,6 @@ namespace ScribblersPad
         /// Player count string format string translation
         /// </summary>
         StringTranslationObjectScript PlayerCountStringFormatStringTranslation { get; set; }
-
-        /// <summary>
-        /// Language image
-        /// </summary>
-        Image LanguageImage { get; set; }
-
-        /// <summary>
-        /// Is votekicking enabled image
-        /// </summary>
-        Image IsVotekickingEnabledImage { get; set; }
-
-        /// <summary>
-        /// Is using custom words image
-        /// </summary>
-        Image OsUsingCustomWordsImage { get; set; }
 
         /// <summary>
         /// Current round text

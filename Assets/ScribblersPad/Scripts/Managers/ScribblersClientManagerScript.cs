@@ -686,7 +686,7 @@ namespace ScribblersPad.Managers
             if (save_game.Data != null)
             {
                 DestroyClient();
-                ScribblersClient = Clients.Create(save_game.Data.ScribblersHost, save_game.Data.UserSessionID, save_game.Data.IsUsingSecureProtocols);
+                ScribblersClient = Clients.Create(save_game.Data.ScribblersHost, save_game.Data.GetUserSessionID(save_game.Data.ScribblersHost), save_game.Data.IsUsingSecureProtocols, save_game.Data.IsAllowedToUseInsecureProtocols);
             }
         }
 
@@ -701,7 +701,7 @@ namespace ScribblersPad.Managers
                 SaveGame<SaveGameData> save_game = SaveGames.Get<SaveGameData>();
                 if (save_game != null)
                 {
-                    save_game.Data.UserSessionID = ScribblersClient.UserSessionID;
+                    save_game.Data.SetUserSessionID(ScribblersClient.Host, ScribblersClient.UserSessionID);
                     save_game.Save();
                 }
                 ScribblersClient.Dispose();
@@ -787,19 +787,19 @@ namespace ScribblersPad.Managers
         }
 
         /// <summary>
-        /// Gets server statistics asynchronously
+        /// Gets server statistics
         /// </summary>
         /// <returns>Server statistics task</returns>
         public Task<IServerStatistics> GetServerStatisticsAsync() => (ScribblersClient == null) ? Task.FromResult<IServerStatistics>(new ServerStatistics()) : ScribblersClient.GetServerStatisticsAsync();
 
         /// <summary>
-        /// Lists all public lobbies asynchronously
+        /// Lists all public lobbies
         /// </summary>
         /// <returns>Lobby views task</returns>
-        public Task<IEnumerable<ILobbyView>> ListLobbiesAsync() => (ScribblersClient == null) ? Task.FromResult<IEnumerable<ILobbyView>>(Array.Empty<ILobbyView>()) : ScribblersClient.ListLobbiesAsync();
+        public Task<ILobbyViews> ListLobbiesAsync() => (ScribblersClient == null) ? Task.FromResult<ILobbyViews>(null) : ScribblersClient.ListLobbiesAsync();
 
         /// <summary>
-        /// Changes lobby rules asynchronously
+        /// Changes lobby rules
         /// </summary>
         /// <param name="language">Language</param>
         /// <param name="isPublic">Is lobby public</param>
@@ -814,13 +814,12 @@ namespace ScribblersPad.Managers
         public Task ChangeLobbyRulesAsync(ELanguage? language = null, bool? isPublic = null, uint? maximalPlayerCount = null, ulong? drawingTime = null, uint? roundCount = null, IReadOnlyList<string> customWords = null, uint? customWordsChance = null, bool? isVotekickingEnabled = null, uint? clientsPerIPLimit = null) => (ScribblersClient == null) ? Task.CompletedTask : ScribblersClient.ChangeLobbyRulesAsync(language, isPublic, maximalPlayerCount, drawingTime, roundCount, customWords, customWordsChance, isVotekickingEnabled, clientsPerIPLimit);
 
         /// <summary>
-        /// Sends a "start-game" message asynchronously
+        /// Sends a "start-game" message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendStartGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendStartGameMessageAsync();
+        public void SendStartGameMessage() => Lobby?.SendStartGameMessage();
 
         /// <summary>
-        /// Sends a "line" game message asynchronously
+        /// Sends a "line" game message
         /// </summary>
         /// <param name="fromX">X component of start line position</param>
         /// <param name="fromY">Y component of start line position</param>
@@ -828,63 +827,54 @@ namespace ScribblersPad.Managers
         /// <param name="toY">Y component of end line position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width in pixels</param>
-        /// <returns>Task</returns>
-        public Task SendLineGameMessageAsync(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth) => (Lobby == null) ? Task.CompletedTask : Lobby.SendLineGameMessageAsync(fromX, fromY, toX, toY, color, lineWidth);
+        public void SendLineGameMessage(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth) => Lobby?.SendLineGameMessage(fromX, fromY, toX, toY, color, lineWidth);
 
         /// <summary>
-        /// Sends a "fill" game message asynchronously
+        /// Sends a "fill" game message
         /// </summary>
         /// <param name="positionX">X component of fill start posiiton</param>
         /// <param name="positionY">Y component of fill start position</param>
         /// <param name="color"></param>
-        /// <returns>Task</returns>
-        public Task SendFillGameMessageAsync(float positionX, float positionY, System.Drawing.Color color) => (Lobby == null) ? Task.CompletedTask : Lobby.SendFillGameMessageAsync(positionX, positionY, color);
+        public void SendFillGameMessage(float positionX, float positionY, System.Drawing.Color color) => Lobby?.SendFillGameMessage(positionX, positionY, color);
 
         /// <summary>
-        /// Sends a "clear-drawing-board" game message asynchronously
+        /// Sends a "clear-drawing-board" game message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendClearDrawingBoardGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendClearDrawingBoardGameMessageAsync();
+        public void SendClearDrawingBoardGameMessage() => Lobby?.SendClearDrawingBoardGameMessage();
 
         /// <summary>
-        /// Sends a "message" game message asynchronously
+        /// Sends a "message" game message
         /// </summary>
         /// <param name="content">Message content</param>
-        /// <returns>Task</returns>
-        public Task SendMessageGameMessageAsync(string content) => (Lobby == null) ? Task.CompletedTask : Lobby.SendMessageGameMessageAsync(content);
+        public void SendMessageGameMessage(string content) => Lobby?.SendMessageGameMessage(content);
 
         /// <summary>
-        /// Sends a "choose-word" game message asynchronously
+        /// Sends a "choose-word" game message
         /// </summary>
         /// <param name="index">Word index</param>
-        /// <returns>Task</returns>
-        public Task SendChooseWordGameMessageAsync(uint index) => (Lobby == null) ? Task.CompletedTask : Lobby.SendChooseWordGameMessageAsync(index);
+        public void SendChooseWordGameMessage(uint index) => Lobby?.SendChooseWordGameMessage(index);
 
         /// <summary>
-        /// Sends a "name-change" game message asynchronously
+        /// Sends a "name-change" game message
         /// </summary>
         /// <param name="newUsername">New username</param>
-        /// <returns>Task</returns>
-        public Task SendNameChangeGameMessageAsync(string newUsername) => (Lobby == null) ? Task.CompletedTask : Lobby.SendNameChangeGameMessageAsync(newUsername);
+        public void SendNameChangeGameMessage(string newUsername) => Lobby?.SendNameChangeGameMessage(newUsername);
 
         /// <summary>
-        /// Sends a "request-drawing" game message asynchronously
+        /// Sends a "request-drawing" game message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendRequestDrawingGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendRequestDrawingGameMessageAsync();
+        public void SendRequestDrawingGameMessage() => Lobby?.SendRequestDrawingGameMessage();
 
         /// <summary>
-        /// Sends a "kick-vote" game message asynchronously
+        /// Sends a "kick-vote" game message
         /// </summary>
         /// <param name="toKickPlayer">To kick player</param>
-        /// <returns></returns>
-        public Task SendKickVoteGameMessageAsync(IPlayer toKickPlayer) => (Lobby == null) ? Task.CompletedTask : Lobby.SendKickVoteGameMessageAsync(toKickPlayer);
+        public void SendKickVoteGameMessage(IPlayer toKickPlayer) => Lobby?.SendKickVoteGameMessage(toKickPlayer);
 
         /// <summary>
-        /// Sends a "keep-alive" game message asynchronously
+        /// Sends a "keep-alive" game message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendKeepAliveGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendKeepAliveGameMessageAsync();
+        public void SendKeepAliveGameMessage() => Lobby?.SendKeepAliveGameMessage();
 
         /// <summary>
         /// Gets invoked when script gets enabled

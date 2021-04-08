@@ -12,14 +12,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "abebde1320d3449e19c392fc875e11e72466103b"
-    },
-    "com.bigeti.dialog.textmeshpro": {
-      "version": "https://github.com/BigETI/UnityTMProDialog.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "b625c33c978bc801ebab5d4adfb16e87c73f8723"
+      "hash": "8a12df628f023d4581b971063519e250b5bc2074"
     },
     "com.bigeti.parallel": {
       "version": "https://github.com/BigETI/UnityParallel.git",

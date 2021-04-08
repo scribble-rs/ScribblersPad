@@ -28,6 +28,11 @@ namespace ScribblersPad
         Toggle IsUsingSecureProtocolsToggle { get; set; }
 
         /// <summary>
+        /// Is allowed to use insecure protocols toggle
+        /// </summary>
+        Toggle IsAllowedToUseInsecureProtocolsToggle { get; set; }
+
+        /// <summary>
         /// Username input field
         /// </summary>
         TMP_InputField UsernameInputField { get; set; }

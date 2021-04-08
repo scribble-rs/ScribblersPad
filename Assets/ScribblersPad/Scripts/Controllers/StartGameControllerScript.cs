@@ -67,6 +67,6 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Starts game
         /// </summary>
-        public void StartGame() => ScribblersClientManager.SendStartGameMessageAsync();
+        public void StartGame() => ScribblersClientManager.SendStartGameMessage();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityTranslator.Objects;
 
 /// <summary>
 /// Scribble.rs Pad namespace
@@ -10,6 +11,16 @@ namespace ScribblersPad
     /// </summary>
     public interface IMainMenuController : IBehaviour
     {
+        /// <summary>
+        /// Quit game title string translation
+        /// </summary>
+        StringTranslationObjectScript QuitGameTitleStringTranslation { get; set; }
+
+        /// <summary>
+        /// Quit game message string translation
+        /// </summary>
+        StringTranslationObjectScript QuitGameMessageStringTranslation { get; set; }
+
         /// <summary>
         /// Main menu UI layout state
         /// </summary>
@@ -86,8 +97,8 @@ namespace ScribblersPad
         void JoinSelectedLobby();
 
         /// <summary>
-        /// Quits game
+        /// Requests quitting game
         /// </summary>
-        void QuitGame();
+        void RequestQuittingGame();
     }
 }
