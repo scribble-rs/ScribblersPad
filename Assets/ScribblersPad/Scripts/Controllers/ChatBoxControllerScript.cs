@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityTranslator.Objects;
 
 /// <summary>
 /// Scribble.rs Pad controllers namespace

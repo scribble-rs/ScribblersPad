@@ -29,7 +29,7 @@ namespace ScribblersPad
         /// <summary>
         /// Color
         /// </summary>
-        public Color32 Color { get; }
+        public IColor Color { get; }
 
         /// <summary>
         /// Line width

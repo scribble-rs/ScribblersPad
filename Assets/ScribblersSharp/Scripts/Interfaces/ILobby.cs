@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Net.WebSockets;
 
 /// <summary>
@@ -29,44 +28,9 @@ namespace ScribblersSharp
         string LobbyID { get; }
 
         /// <summary>
-        /// Minimal drawing time in seconds
+        /// Lobby settings limits
         /// </summary>
-        uint MinimalDrawingTime { get; }
-
-        /// <summary>
-        /// Maximal drawing time in seconds
-        /// </summary>
-        uint MaximalDrawingTime { get; }
-
-        /// <summary>
-        /// Minimal round count
-        /// </summary>
-        uint MinimalRoundCount { get; }
-
-        /// <summary>
-        /// Maximal round count
-        /// </summary>
-        uint MaximalRoundCount { get; }
-
-        /// <summary>
-        /// Minimal of maximal player count
-        /// </summary>
-        uint MinimalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Maximal of maximal player count
-        /// </summary>
-        uint MaximalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Minimal clients per IP count limit
-        /// </summary>
-        uint MinimalClientsPerIPLimit { get; }
-
-        /// <summary>
-        /// Maximal clients per IP count limit
-        /// </summary>
-        uint MaximalClientsPerIPLimit { get; }
+        ILobbyLimits Limits { get; }
 
         /// <summary>
         /// Maximal player count
@@ -76,7 +40,7 @@ namespace ScribblersSharp
         /// <summary>
         /// Is lobby public
         /// </summary>
-        bool IsPublic { get; }
+        bool IsLobbyPublic { get; }
 
         /// <summary>
         /// Is votekicking enabled
@@ -91,7 +55,7 @@ namespace ScribblersSharp
         /// <summary>
         /// Clients per IP limit
         /// </summary>
-        uint ClientsPerIPLimit { get; }
+        uint AllowedClientsPerIPCount { get; }
 
         /// <summary>
         /// Drawing board base width
@@ -104,16 +68,6 @@ namespace ScribblersSharp
         uint DrawingBoardBaseHeight { get; }
 
         /// <summary>
-        /// Minimal brush size
-        /// </summary>
-        uint MinimalBrushSize { get; }
-
-        /// <summary>
-        /// Maximal brush size
-        /// </summary>
-        uint MaximalBrushSize { get; }
-
-        /// <summary>
         /// Suggested brush sizes
         /// </summary>
         IEnumerable<uint> SuggestedBrushSizes { get; }
@@ -121,7 +75,7 @@ namespace ScribblersSharp
         /// <summary>
         /// Canvas color
         /// </summary>
-        Color CanvasColor { get; }
+        IColor CanvasColor { get; }
 
         /// <summary>
         /// My player
@@ -139,14 +93,14 @@ namespace ScribblersSharp
         IPlayer Owner { get; }
 
         /// <summary>
-        /// Round
+        /// Current round
         /// </summary>
-        uint Round { get; }
+        uint CurrentRound { get; }
 
         /// <summary>
-        /// Maximal rounds
+        /// Current maximal round count
         /// </summary>
-        uint MaximalRounds { get; }
+        uint CurrentMaximalRoundCount { get; }
 
         /// <summary>
         /// Current drawing time in milliseconds
@@ -304,7 +258,7 @@ namespace ScribblersSharp
         /// <param name="toY">Draw to Y</param>
         /// <param name="color">Draw color</param>
         /// <param name="lineWidth">Line width</param>
-        void SendLineGameMessage(float fromX, float fromY, float toX, float toY, Color color, float lineWidth);
+        void SendLineGameMessage(float fromX, float fromY, float toX, float toY, IColor color, float lineWidth);
 
         /// <summary>
         /// Sends a "fill" game message
@@ -312,7 +266,7 @@ namespace ScribblersSharp
         /// <param name="positionX"></param>
         /// <param name="positionY"></param>
         /// <param name="color"></param>
-        void SendFillGameMessage(float positionX, float positionY, Color color);
+        void SendFillGameMessage(float positionX, float positionY, IColor color);
 
         /// <summary>
         /// Sends a "clear-drawing-board" game message

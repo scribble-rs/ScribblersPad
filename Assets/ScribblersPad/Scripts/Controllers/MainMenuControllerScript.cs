@@ -228,61 +228,59 @@ namespace ScribblersPad.Controllers
                     ILobbyView result = null;
                     try
                     {
-                        using (IScribblersClient scribblers_client = Clients.Create(host, user_session_id, is_using_secure_protocols, is_allowed_to_use_insecure_protocols))
+                        using IScribblersClient scribblers_client = Clients.Create(host, user_session_id, is_using_secure_protocols, is_allowed_to_use_insecure_protocols);
+                        IEnumerable<ILobbyView> lobby_views = await scribblers_client.ListLobbiesAsync();
+                        if (lobby_views != null)
                         {
-                            IEnumerable<ILobbyView> lobby_views = await scribblers_client.ListLobbiesAsync();
-                            if (lobby_views != null)
+                            List<ILobbyView> candidate_lobby_views = new List<ILobbyView>();
+                            foreach (ILobbyView lobby_view in lobby_views)
                             {
-                                List<ILobbyView> candidate_lobby_views = new List<ILobbyView>();
+                                if
+                                (
+                                    (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
+                                    (lobby_view.Language == language) &&
+                                    (lobby_view.RoundCount == round_count) &&
+                                    (lobby_view.DrawingTime == drawing_time) &&
+                                    (lobby_view.IsVotekickingEnabled == is_votekicking_enabled) &&
+                                    (lobby_view.MaximalPlayerCount == maximal_player_count) &&
+                                    (lobby_view.MaximalClientsPerIPCount == players_per_ip_limit)
+                                )
+                                {
+                                    candidate_lobby_views.Add(lobby_view);
+                                }
+                            }
+                            if (candidate_lobby_views.Count <= 0)
+                            {
                                 foreach (ILobbyView lobby_view in lobby_views)
                                 {
                                     if
                                     (
                                         (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
                                         (lobby_view.Language == language) &&
-                                        (lobby_view.RoundCount == round_count) &&
-                                        (lobby_view.DrawingTime == drawing_time) &&
-                                        (lobby_view.IsVotekickingEnabled == is_votekicking_enabled) &&
-                                        (lobby_view.MaximalPlayerCount == maximal_player_count) &&
-                                        (lobby_view.MaximalClientsPerIPCount == players_per_ip_limit)
+                                        (lobby_view.RoundCount == round_count)
                                     )
                                     {
                                         candidate_lobby_views.Add(lobby_view);
                                     }
                                 }
-                                if (candidate_lobby_views.Count <= 0)
+                            }
+                            if (candidate_lobby_views.Count <= 0)
+                            {
+                                foreach (ILobbyView lobby_view in lobby_views)
                                 {
-                                    foreach (ILobbyView lobby_view in lobby_views)
+                                    if
+                                    (
+                                        (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
+                                        (lobby_view.Language == language)
+                                    )
                                     {
-                                        if
-                                        (
-                                            (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
-                                            (lobby_view.Language == language) &&
-                                            (lobby_view.RoundCount == round_count)
-                                        )
-                                        {
-                                            candidate_lobby_views.Add(lobby_view);
-                                        }
+                                        candidate_lobby_views.Add(lobby_view);
                                     }
                                 }
-                                if (candidate_lobby_views.Count <= 0)
-                                {
-                                    foreach (ILobbyView lobby_view in lobby_views)
-                                    {
-                                        if
-                                        (
-                                            (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
-                                            (lobby_view.Language == language)
-                                        )
-                                        {
-                                            candidate_lobby_views.Add(lobby_view);
-                                        }
-                                    }
-                                }
-                                if (candidate_lobby_views.Count > 0)
-                                {
-                                    result = candidate_lobby_views[new System.Random().Next(0, candidate_lobby_views.Count)];
-                                }
+                            }
+                            if (candidate_lobby_views.Count > 0)
+                            {
+                                result = candidate_lobby_views[new System.Random().Next(0, candidate_lobby_views.Count)];
                             }
                         }
                     }

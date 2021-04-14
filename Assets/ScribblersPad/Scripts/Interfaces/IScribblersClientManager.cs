@@ -35,44 +35,9 @@ namespace ScribblersPad
         string LobbyID { get; }
 
         /// <summary>
-        /// Minimal drawing time in seconds
+        /// Lobby limits
         /// </summary>
-        uint MinimalDrawingTime { get; }
-
-        /// <summary>
-        /// Maximal drawing time in seconds
-        /// </summary>
-        uint MaximalDrawingTime { get; }
-
-        /// <summary>
-        /// Minimal round count
-        /// </summary>
-        uint MinimalRoundCount { get; }
-
-        /// <summary>
-        /// Maximal round count
-        /// </summary>
-        uint MaximalRoundCount { get; }
-
-        /// <summary>
-        /// Minimal of maximal player count
-        /// </summary>
-        uint MinimalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Maximal of maximal player count
-        /// </summary>
-        uint MaximalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Minimal clients per IP count limit
-        /// </summary>
-        uint MinimalClientsPerIPLimit { get; }
-
-        /// <summary>
-        /// Maximal clients per IP count limit
-        /// </summary>
-        uint MaximalClientsPerIPLimit { get; }
+        ILobbyLimits Limits { get; }
 
         /// <summary>
         /// Maximal player count
@@ -82,7 +47,7 @@ namespace ScribblersPad
         /// <summary>
         /// Is lobby public
         /// </summary>
-        bool IsPublic { get; }
+        bool IsLobbyPublic { get; }
 
         /// <summary>
         /// Is votekicking enabled
@@ -95,9 +60,9 @@ namespace ScribblersPad
         uint CustomWordsChance { get; }
 
         /// <summary>
-        /// Clients per IP limit
+        /// Allowed clients per IP count
         /// </summary>
-        uint ClientsPerIPLimit { get; }
+        uint AllowedClientsPerIPCount { get; }
 
         /// <summary>
         /// Drawing board base width
@@ -108,16 +73,6 @@ namespace ScribblersPad
         /// Drawing board base height
         /// </summary>
         uint DrawingBoardBaseHeight { get; }
-
-        /// <summary>
-        /// Minimal brush size
-        /// </summary>
-        uint MinimalBrushSize { get; }
-
-        /// <summary>
-        /// Maximal brush size
-        /// </summary>
-        uint MaximalBrushSize { get; }
 
         /// <summary>
         /// Suggested brush sizes
@@ -147,12 +102,12 @@ namespace ScribblersPad
         /// <summary>
         /// Current round
         /// </summary>
-        uint Round { get; }
+        uint CurrentRound { get; }
 
         /// <summary>
-        /// Maximal amount of rounds
+        /// Current maximal round count
         /// </summary>
-        uint MaximalRounds { get; }
+        uint CurrentMaximalRoundCount { get; }
 
         /// <summary>
         /// Current drawing time in milliseconds
@@ -359,7 +314,7 @@ namespace ScribblersPad
         /// <param name="toY">Y component of end line position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width in pixels</param>
-        void SendLineGameMessage(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth);
+        void SendLineGameMessage(float fromX, float fromY, float toX, float toY, ScribblersSharp.Color color, float lineWidth);
 
         /// <summary>
         /// Sends a "fill" game message asynchronously
@@ -367,7 +322,7 @@ namespace ScribblersPad
         /// <param name="positionX">X component of fill start posiiton</param>
         /// <param name="positionY">Y component of fill start position</param>
         /// <param name="color"></param>
-        void SendFillGameMessage(float positionX, float positionY, System.Drawing.Color color);
+        void SendFillGameMessage(float positionX, float positionY, ScribblersSharp.Color color);
 
         /// <summary>
         /// Sends a "clear-drawing-board" game message asynchronously

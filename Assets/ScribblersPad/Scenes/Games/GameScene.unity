@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isKeepingEventsActiveWhenDisabled: 1
-  minimalDrawingFrameTime: 16
+  minimalDrawingFrameTime: 50
   onLineDrawn:
     m_PersistentCalls:
       m_Calls: []

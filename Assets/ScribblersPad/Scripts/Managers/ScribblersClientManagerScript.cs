@@ -159,44 +159,9 @@ namespace ScribblersPad.Managers
         public string LobbyID => (Lobby == null) ? string.Empty : Lobby.LobbyID;
 
         /// <summary>
-        /// Minimal drawing time in seconds
+        /// Lobby limits
         /// </summary>
-        public uint MinimalDrawingTime => (Lobby == null) ? 0U : Lobby.MinimalDrawingTime;
-
-        /// <summary>
-        /// Maximal drawing time in seconds
-        /// </summary>
-        public uint MaximalDrawingTime => (Lobby == null) ? 0U : Lobby.MaximalDrawingTime;
-
-        /// <summary>
-        /// Minimal round count
-        /// </summary>
-        public uint MinimalRoundCount => (Lobby == null) ? 0U : Lobby.MinimalRoundCount;
-
-        /// <summary>
-        /// Maximal round count
-        /// </summary>
-        public uint MaximalRoundCount => (Lobby == null) ? 0U : Lobby.MaximalRoundCount;
-
-        /// <summary>
-        /// Minimal of maximal player count
-        /// </summary>
-        public uint MinimalMaximalPlayerCount => (Lobby == null) ? 0U : Lobby.MinimalMaximalPlayerCount;
-
-        /// <summary>
-        /// Maximal of maximal player count
-        /// </summary>
-        public uint MaximalMaximalPlayerCount => (Lobby == null) ? 0U : Lobby.MaximalMaximalPlayerCount;
-
-        /// <summary>
-        /// Minimal clients per IP count limit
-        /// </summary>
-        public uint MinimalClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.MinimalClientsPerIPLimit;
-
-        /// <summary>
-        /// Maximal clients per IP count limit
-        /// </summary>
-        public uint MaximalClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.MaximalClientsPerIPLimit;
+        public ILobbyLimits Limits => Lobby?.Limits;
 
         /// <summary>
         /// Maximal player count
@@ -206,7 +171,7 @@ namespace ScribblersPad.Managers
         /// <summary>
         /// Is lobby public
         /// </summary>
-        public bool IsPublic => (Lobby != null) && Lobby.IsPublic;
+        public bool IsLobbyPublic => (Lobby != null) && Lobby.IsLobbyPublic;
 
         /// <summary>
         /// Is votekicking enabled
@@ -219,9 +184,9 @@ namespace ScribblersPad.Managers
         public uint CustomWordsChance => (Lobby == null) ? 0U : Lobby.CustomWordsChance;
 
         /// <summary>
-        /// Clients per IP limit
+        /// Allowed clients per IP
         /// </summary>
-        public uint ClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.ClientsPerIPLimit;
+        public uint AllowedClientsPerIPCount => (Lobby == null) ? 0U : Lobby.AllowedClientsPerIPCount;
 
         /// <summary>
         /// Drawing board base width
@@ -232,16 +197,6 @@ namespace ScribblersPad.Managers
         /// Drawing board base height
         /// </summary>
         public uint DrawingBoardBaseHeight => (Lobby == null) ? 0U : Lobby.DrawingBoardBaseHeight;
-
-        /// <summary>
-        /// Minimal brush size
-        /// </summary>
-        public uint MinimalBrushSize => (Lobby == null) ? 0U : Lobby.MinimalBrushSize;
-
-        /// <summary>
-        /// Maximal brush size
-        /// </summary>
-        public uint MaximalBrushSize => (Lobby == null) ? 0U : Lobby.MaximalBrushSize;
 
         /// <summary>
         /// Suggested brush sizes
@@ -271,12 +226,12 @@ namespace ScribblersPad.Managers
         /// <summary>
         /// Current round
         /// </summary>
-        public uint Round => (Lobby == null) ? 0U : Lobby.Round;
+        public uint CurrentRound => (Lobby == null) ? 0U : Lobby.CurrentRound;
 
         /// <summary>
-        /// Maximal amount of rounds
+        /// Current maximal round count
         /// </summary>
-        public uint MaximalRounds => (Lobby == null) ? 0U : Lobby.MaximalRounds;
+        public uint CurrentMaximalRoundCount => (Lobby == null) ? 0U : Lobby.CurrentMaximalRoundCount;
 
         /// <summary>
         /// Current drawing time in milliseconds
@@ -437,7 +392,7 @@ namespace ScribblersPad.Managers
         /// </summary>
         private void LobbyReadyGameMessageReceivedEvent()
         {
-            CanvasColor = new Color32(Lobby.CanvasColor.R, Lobby.CanvasColor.G, Lobby.CanvasColor.B, 0xFF);
+            CanvasColor = new Color32(Lobby.CanvasColor.Red, Lobby.CanvasColor.Green, Lobby.CanvasColor.Blue, 0xFF);
             if (onReadyGameMessageReceived != null)
             {
                 onReadyGameMessageReceived.Invoke();
@@ -545,7 +500,7 @@ namespace ScribblersPad.Managers
         /// <param name="toY">Y component of end line position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width</param>
-        private void LobbyLineGameMessageReceivedEvent(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth)
+        private void LobbyLineGameMessageReceivedEvent(float fromX, float fromY, float toX, float toY, IColor color, float lineWidth)
         {
             if (onLineGameMessageReceived != null)
             {
@@ -560,7 +515,7 @@ namespace ScribblersPad.Managers
         /// <param name="positionX">X component of fill position</param>
         /// <param name="positionY">Y component of fill position</param>
         /// <param name="color">Color</param>
-        private void LobbyFillGameMessageReceivedEvent(float positionX, float positionY, System.Drawing.Color color)
+        private void LobbyFillGameMessageReceivedEvent(float positionX, float positionY, IColor color)
         {
             if (onFillGameMessageReceived != null)
             {
@@ -827,7 +782,7 @@ namespace ScribblersPad.Managers
         /// <param name="toY">Y component of end line position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width in pixels</param>
-        public void SendLineGameMessage(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth) => Lobby?.SendLineGameMessage(fromX, fromY, toX, toY, color, lineWidth);
+        public void SendLineGameMessage(float fromX, float fromY, float toX, float toY, ScribblersSharp.Color color, float lineWidth) => Lobby?.SendLineGameMessage(fromX, fromY, toX, toY, color, lineWidth);
 
         /// <summary>
         /// Sends a "fill" game message
@@ -835,7 +790,7 @@ namespace ScribblersPad.Managers
         /// <param name="positionX">X component of fill start posiiton</param>
         /// <param name="positionY">Y component of fill start position</param>
         /// <param name="color"></param>
-        public void SendFillGameMessage(float positionX, float positionY, System.Drawing.Color color) => Lobby?.SendFillGameMessage(positionX, positionY, color);
+        public void SendFillGameMessage(float positionX, float positionY, ScribblersSharp.Color color) => Lobby?.SendFillGameMessage(positionX, positionY, color);
 
         /// <summary>
         /// Sends a "clear-drawing-board" game message

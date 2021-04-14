@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
-using ScribblersSharp.JSONConverters;
-using System.Drawing;
+using System;
 
 /// <summary>
 /// Scribble.rs ♯ data namespace
@@ -11,7 +10,7 @@ namespace ScribblersSharp.Data
     /// Line data
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    internal class LineData
+    internal class LineData : IValidable
     {
         /// <summary>
         /// Line from X
@@ -41,8 +40,7 @@ namespace ScribblersSharp.Data
         /// Line color
         /// </summary>
         [JsonProperty("color")]
-        [JsonConverter(typeof(ColorJSONConverter))]
-        public Color Color { get; set; }
+        public ColorData Color { get; set; }
 
         /// <summary>
         /// Line width
@@ -51,7 +49,14 @@ namespace ScribblersSharp.Data
         public float LineWidth { get; set; }
 
         /// <summary>
-        /// Default constructor
+        /// Is object in a valid state
+        /// </summary>
+        public bool IsValid =>
+            (Color != null) &&
+            (LineWidth > float.Epsilon);
+
+        /// <summary>
+        /// Constructs line data for deserializers
         /// </summary>
         public LineData()
         {
@@ -59,7 +64,7 @@ namespace ScribblersSharp.Data
         }
 
         /// <summary>
-        /// Constructor
+        /// Constructs line data
         /// </summary>
         /// <param name="fromX">Line from X</param>
         /// <param name="fromY">Line from Y</param>
@@ -67,13 +72,17 @@ namespace ScribblersSharp.Data
         /// <param name="toY">Line to Y</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width</param>
-        public LineData(float fromX, float fromY, float toX, float toY, Color color, float lineWidth)
+        public LineData(float fromX, float fromY, float toX, float toY, IColor color, float lineWidth)
         {
+            if (color == null)
+            {
+                throw new ArgumentNullException(nameof(color));
+            }
             FromX = fromX;
             FromY = fromY;
             ToX = toX;
             ToY = toY;
-            Color = color;
+            Color = new ColorData(color.Red, color.Green, color.Blue);
             LineWidth = lineWidth;
         }
     }

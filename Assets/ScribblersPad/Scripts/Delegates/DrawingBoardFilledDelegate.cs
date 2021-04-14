@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ScribblersSharp;
+using UnityEngine;
 
 /// <summary>
 /// Scribble.rs Pad namespace
@@ -10,5 +11,5 @@ namespace ScribblersPad
     /// </summary>
     /// <param name="position">Position</param>
     /// <param name="color">Color</param>
-    public delegate void DrawingBoardFilledDelegate(Vector2 position, Color32 color);
+    public delegate void DrawingBoardFilledDelegate(Vector2 position, IColor color);
 }

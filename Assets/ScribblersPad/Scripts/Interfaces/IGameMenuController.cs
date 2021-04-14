@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityTranslator.Objects;
+﻿using UnityTranslator.Objects;
 
 /// <summary>
 /// Scribble.rs Pad namespace

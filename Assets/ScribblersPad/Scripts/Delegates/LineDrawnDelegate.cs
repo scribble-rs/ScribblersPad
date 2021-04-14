@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ScribblersSharp;
+using UnityEngine;
 
 /// <summary>
 /// Scribble.rs Pad namespace
@@ -12,5 +13,5 @@ namespace ScribblersPad
     /// <param name="to">Line end position</param>
     /// <param name="color">Line color</param>
     /// <param name="lineWidth">Line width</param>
-    public delegate void LineDrawnDelegate(Vector2 from, Vector2 to, Color32 color, float lineWidth);
+    public delegate void LineDrawnDelegate(Vector2 from, Vector2 to, IColor color, float lineWidth);
 }
