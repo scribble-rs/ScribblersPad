@@ -1,4 +1,5 @@
 ﻿using ScribblersSharp;
+using System;
 using TMPro;
 using UnityEngine.UI;
 using UnityTranslator.Objects;
@@ -34,9 +35,19 @@ namespace ScribblersPad
         Image TimeProgressImage { get; set; }
 
         /// <summary>
-        /// Current time
+        /// Round start date and time
         /// </summary>
-        float CurrentTime { get; }
+        DateTime RoundStartDateTime { get; }
+
+        /// <summary>
+        /// Round start time in seconds
+        /// </summary>
+        double RoundStartTime { get; }
+
+        /// <summary>
+        /// Current time in seconds
+        /// </summary>
+        double CurrentTime { get; }
 
         /// <summary>
         /// Gets invoked when a "ready" game message has been received

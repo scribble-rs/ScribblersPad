@@ -3,11 +3,13 @@ using ScribblersSharp;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityDialog;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnitySaveGame;
 using UnitySceneLoaderManager;
+using UnityTranslator.Objects;
 
 /// <summary>
 /// Scribble.rs Pad controllers namespace
@@ -24,6 +26,18 @@ namespace ScribblersPad.Controllers
         /// "nenuID" hash
         /// </summary>
         private static readonly int menuIDHash = Animator.StringToHash("menuID");
+
+        /// <summary>
+        /// Quit game title string translation
+        /// </summary>
+        [SerializeField]
+        private StringTranslationObjectScript quitGameTitleStringTranslation = default;
+
+        /// <summary>
+        /// Quit game message string translation
+        /// </summary>
+        [SerializeField]
+        private StringTranslationObjectScript quitGameMessageStringTranslation = default;
 
         /// <summary>
         /// Gets invoked when main menu has been shown
@@ -63,6 +77,24 @@ namespace ScribblersPad.Controllers
         /// Is pressing escape key
         /// </summary>
         private bool isPressingEscapeKey;
+
+        /// <summary>
+        /// Quit game title string translation
+        /// </summary>
+        public StringTranslationObjectScript QuitGameTitleStringTranslation
+        {
+            get => quitGameTitleStringTranslation;
+            set => quitGameTitleStringTranslation = value;
+        }
+
+        /// <summary>
+        /// Quit game message string translation
+        /// </summary>
+        public StringTranslationObjectScript QuitGameMessageStringTranslation
+        {
+            get => quitGameMessageStringTranslation;
+            set => quitGameMessageStringTranslation = value;
+        }
 
         /// <summary>
         /// Main menu UI layout state
@@ -182,8 +214,9 @@ namespace ScribblersPad.Controllers
             if (save_game != null)
             {
                 string host = save_game.Data.ScribblersHost;
-                string user_session_id = save_game.Data.UserSessionID;
+                string user_session_id = save_game.Data.GetUserSessionID(host);
                 bool is_using_secure_protocols = save_game.Data.IsUsingSecureProtocols;
+                bool is_allowed_to_use_insecure_protocols = save_game.Data.IsAllowedToUseInsecureProtocols;
                 ELanguage language = save_game.Data.LobbyLanguage;
                 uint round_count = save_game.Data.RoundCount;
                 uint drawing_time = save_game.Data.DrawingTime;
@@ -195,61 +228,59 @@ namespace ScribblersPad.Controllers
                     ILobbyView result = null;
                     try
                     {
-                        using (IScribblersClient scribblers_client = Clients.Create(host, user_session_id, is_using_secure_protocols))
+                        using IScribblersClient scribblers_client = Clients.Create(host, user_session_id, is_using_secure_protocols, is_allowed_to_use_insecure_protocols);
+                        IEnumerable<ILobbyView> lobby_views = await scribblers_client.ListLobbiesAsync();
+                        if (lobby_views != null)
                         {
-                            IEnumerable<ILobbyView> lobby_views = await scribblers_client.ListLobbiesAsync();
-                            if (lobby_views != null)
+                            List<ILobbyView> candidate_lobby_views = new List<ILobbyView>();
+                            foreach (ILobbyView lobby_view in lobby_views)
                             {
-                                List<ILobbyView> candidate_lobby_views = new List<ILobbyView>();
+                                if
+                                (
+                                    (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
+                                    (lobby_view.Language == language) &&
+                                    (lobby_view.RoundCount == round_count) &&
+                                    (lobby_view.DrawingTime == drawing_time) &&
+                                    (lobby_view.IsVotekickingEnabled == is_votekicking_enabled) &&
+                                    (lobby_view.MaximalPlayerCount == maximal_player_count) &&
+                                    (lobby_view.MaximalClientsPerIPCount == players_per_ip_limit)
+                                )
+                                {
+                                    candidate_lobby_views.Add(lobby_view);
+                                }
+                            }
+                            if (candidate_lobby_views.Count <= 0)
+                            {
                                 foreach (ILobbyView lobby_view in lobby_views)
                                 {
                                     if
                                     (
                                         (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
                                         (lobby_view.Language == language) &&
-                                        (lobby_view.RoundCount == round_count) &&
-                                        (lobby_view.DrawingTime == drawing_time) &&
-                                        (lobby_view.IsVotekickingEnabled == is_votekicking_enabled) &&
-                                        (lobby_view.MaximalPlayerCount == maximal_player_count) &&
-                                        (lobby_view.MaximalClientsPerIPCount == players_per_ip_limit)
+                                        (lobby_view.RoundCount == round_count)
                                     )
                                     {
                                         candidate_lobby_views.Add(lobby_view);
                                     }
                                 }
-                                if (candidate_lobby_views.Count <= 0)
+                            }
+                            if (candidate_lobby_views.Count <= 0)
+                            {
+                                foreach (ILobbyView lobby_view in lobby_views)
                                 {
-                                    foreach (ILobbyView lobby_view in lobby_views)
+                                    if
+                                    (
+                                        (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
+                                        (lobby_view.Language == language)
+                                    )
                                     {
-                                        if
-                                        (
-                                            (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
-                                            (lobby_view.Language == language) &&
-                                            (lobby_view.RoundCount == round_count)
-                                        )
-                                        {
-                                            candidate_lobby_views.Add(lobby_view);
-                                        }
+                                        candidate_lobby_views.Add(lobby_view);
                                     }
                                 }
-                                if (candidate_lobby_views.Count <= 0)
-                                {
-                                    foreach (ILobbyView lobby_view in lobby_views)
-                                    {
-                                        if
-                                        (
-                                            (lobby_view.PlayerCount < lobby_view.MaximalPlayerCount) &&
-                                            (lobby_view.Language == language)
-                                        )
-                                        {
-                                            candidate_lobby_views.Add(lobby_view);
-                                        }
-                                    }
-                                }
-                                if (candidate_lobby_views.Count > 0)
-                                {
-                                    result = candidate_lobby_views[new System.Random().Next(0, candidate_lobby_views.Count)];
-                                }
+                            }
+                            if (candidate_lobby_views.Count > 0)
+                            {
+                                result = candidate_lobby_views[new System.Random().Next(0, candidate_lobby_views.Count)];
                             }
                         }
                     }
@@ -289,15 +320,21 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
-        /// Quits game
+        /// Requests quitting game
         /// </summary>
-        public void QuitGame()
+        public void RequestQuittingGame()
         {
+            Dialogs.Show(quitGameTitleStringTranslation ? quitGameTitleStringTranslation.ToString() : string.Empty, quitGameMessageStringTranslation ? quitGameMessageStringTranslation.ToString() : string.Empty, EDialogType.Information, EDialogButtons.YesNo, (dialogResponse, _) =>
+            {
+                if (dialogResponse == EDialogResponse.Yes)
+                {
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+                    UnityEditor.EditorApplication.isPlaying = false;
 #else
-            Application.Quit();
+                    Application.Quit();
 #endif
+                }
+            });
         }
 
         /// <summary>
@@ -328,7 +365,7 @@ namespace ScribblersPad.Controllers
                 {
                     case EMainMenuUILayoutState.Nothing:
                     case EMainMenuUILayoutState.Main:
-                        QuitGame();
+                        RequestQuittingGame();
                         break;
                     case EMainMenuUILayoutState.Play:
                         ShowMainMenu();

@@ -7,12 +7,12 @@ using System;
 namespace ScribblersSharp.JSONConverters
 {
     /// <summary>
-    /// Color JSON converter class
+    /// A class used for convert language to JSON and vice versa
     /// </summary>
     internal class LanguageJSONConverter : JsonConverter<ELanguage>
     {
         /// <summary>
-        /// Read JSON
+        /// Reads JSON
         /// </summary>
         /// <param name="reader">JSON reader</param>
         /// <param name="objectType">Object type</param>
@@ -25,20 +25,27 @@ namespace ScribblersSharp.JSONConverters
             ELanguage ret = existingValue;
             if (reader.Value is string value)
             {
-                if (value == "english_gb")
+                switch (value)
                 {
-                    ret = ELanguage.EnglishGB;
-                }
-                else if (!Enum.TryParse(Naming.UpperFirstCharacter(value), out ret))
-                {
-                    ret = ELanguage.Invalid;
+                    case "english_gb":
+                        ret = ELanguage.EnglishGB;
+                        break;
+                    case "english":
+                        ret = ELanguage.EnglishUS;
+                        break;
+                    default:
+                        if (!Enum.TryParse(Naming.UpperFirstCharacter(value), out ret))
+                        {
+                            ret = ELanguage.Invalid;
+                        }
+                        break;
                 }
             }
             return ret;
         }
 
         /// <summary>
-        /// Write JSON
+        /// Writes JSON
         /// </summary>
         /// <param name="writer">JSON writer</param>
         /// <param name="value">Language value</param>

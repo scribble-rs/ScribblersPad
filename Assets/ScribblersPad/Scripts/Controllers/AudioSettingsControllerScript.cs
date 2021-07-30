@@ -13,6 +13,11 @@ namespace ScribblersPad.Controllers
     public class AudioSettingsControllerScript : MonoBehaviour, IAudioSettingsController
     {
         /// <summary>
+        /// "isMuted" hash
+        /// </summary>
+        private static readonly int isMutedHash = Animator.StringToHash("isMuted");
+
+        /// <summary>
         /// Gets invoked when audio has been muted
         /// </summary>
         [SerializeField]
@@ -23,6 +28,11 @@ namespace ScribblersPad.Controllers
         /// </summary>
         [SerializeField]
         private UnityEvent onUnmuted;
+
+        /// <summary>
+        /// Last is muted
+        /// </summary>
+        private bool lastIsMuted = true;
 
         /// <summary>
         /// Is audio muted
@@ -60,6 +70,11 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
+        /// Audio image animator
+        /// </summary>
+        public Animator AudioImageAnimator { get; private set; }
+
+        /// <summary>
         /// Gets invoked when audio has been muted
         /// </summary>
         public event MutedDelegate OnMuted;
@@ -73,5 +88,27 @@ namespace ScribblersPad.Controllers
         /// Toggles is muted state
         /// </summary>
         public void ToggleIsMutedState() => IsMuted = !IsMuted;
+
+        private void Start()
+        {
+            if (TryGetComponent(out Animator audio_image_animator))
+            {
+                AudioImageAnimator = audio_image_animator;
+            }
+            else
+            {
+                Debug.LogError($"Please attach a \"{ nameof(Animator) }\" component to this game object.", this);
+            }
+        }
+
+        private void Update()
+        {
+            bool is_muted = IsMuted;
+            if ((lastIsMuted != is_muted) && AudioImageAnimator)
+            {
+                lastIsMuted = is_muted;
+                AudioImageAnimator.SetBool(isMutedHash, !lastIsMuted);
+            }
+        }
     }
 }

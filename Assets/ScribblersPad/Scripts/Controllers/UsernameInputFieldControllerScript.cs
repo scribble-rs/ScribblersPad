@@ -177,12 +177,12 @@ namespace ScribblersPad.Controllers
                 string trimmed_username = UsernameInputField.text.Trim();
                 if (trimmed_username.Length > Rules.maximalUsernameLength)
                 {
-                    Dialog.Show((usernameIsTooLongTitleStringTranslation == null) ? string.Empty : usernameIsTooLongTitleStringTranslation.ToString(), (usernameIsTooLongMessageStringTranslation == null) ? string.Empty : usernameIsTooLongMessageStringTranslation.ToString(), EDialogType.Error, EDialogButtons.OK);
+                    Dialogs.Show(usernameIsTooLongTitleStringTranslation ? usernameIsTooLongTitleStringTranslation.ToString() : string.Empty, usernameIsTooLongMessageStringTranslation ? usernameIsTooLongMessageStringTranslation.ToString() : string.Empty, EDialogType.Error, EDialogButtons.OK);
                     UsernameInputField.SetTextWithoutNotify(ScribblersClientManager.Lobby.MyPlayer.Name);
                 }
                 else if (ScribblersClientManager.Lobby.MyPlayer.Name != trimmed_username)
                 {
-                    ScribblersClientManager.SendNameChangeGameMessageAsync(trimmed_username);
+                    ScribblersClientManager.SendNameChangeGameMessage(trimmed_username);
                 }
             }
         }

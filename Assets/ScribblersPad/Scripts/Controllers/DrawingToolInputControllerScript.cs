@@ -15,6 +15,11 @@ namespace ScribblersPad.Controllers
     public class DrawingToolInputControllerScript : AScribblersClientControllerScript, IDrawingToolInputController
     {
         /// <summary>
+        /// Last pointer position lookup
+        /// </summary>
+        private readonly Dictionary<int, Vector2> lastPointerPositionLookup = new Dictionary<int, Vector2>();
+
+        /// <summary>
         /// Drawing tool
         /// </summary>
         [SerializeField]
@@ -46,11 +51,6 @@ namespace ScribblersPad.Controllers
         /// Touch screen keyboard
         /// </summary>
         private TouchScreenKeyboard touchScreenKeyboard;
-
-        /// <summary>
-        /// Last pointer position lookup
-        /// </summary>
-        private Dictionary<int, Vector2> lastPointerPositionLookup = new Dictionary<int, Vector2>();
 
         /// <summary>
         /// Drawing tool
@@ -122,7 +122,8 @@ namespace ScribblersPad.Controllers
                 Vector2 last_pointer_position = lastPointerPositionLookup[eventData.pointerId];
                 if (DrawingBoardController && (drawingTool != EDrawingTool.FloodFill))
                 {
-                    DrawingBoardController.DrawLine(last_pointer_position, pointer_position, (drawingTool == EDrawingTool.Pen) ? drawingToolColor : CanvasColor, brushSize);
+                    Color32 color = (drawingTool == EDrawingTool.Pen) ? drawingToolColor : CanvasColor;
+                    DrawingBoardController.DrawLine(last_pointer_position, pointer_position, new ScribblersSharp.Color(color.r, color.g, color.b), brushSize);
                 }
                 lastPointerPositionLookup[eventData.pointerId] = pointer_position;
             }
@@ -179,13 +180,13 @@ namespace ScribblersPad.Controllers
                     switch (drawingTool)
                     {
                         case EDrawingTool.Pen:
-                            DrawingBoardController.DrawLine(pointer_position, pointer_position, drawingToolColor, brushSize);
+                            DrawingBoardController.DrawLine(pointer_position, pointer_position, new ScribblersSharp.Color(drawingToolColor.r, drawingToolColor.g, drawingToolColor.b), brushSize);
                             break;
                         case EDrawingTool.FloodFill:
-                            DrawingBoardController.Fill(pointer_position, drawingToolColor);
+                            DrawingBoardController.Fill(pointer_position, new ScribblersSharp.Color(drawingToolColor.r, drawingToolColor.g, drawingToolColor.b));
                             break;
                         case EDrawingTool.Eraser:
-                            DrawingBoardController.DrawLine(pointer_position, pointer_position, CanvasColor, brushSize);
+                            DrawingBoardController.DrawLine(pointer_position, pointer_position, new ScribblersSharp.Color(CanvasColor.r, CanvasColor.g, CanvasColor.b), brushSize);
                             break;
                     }
                 }
@@ -207,7 +208,8 @@ namespace ScribblersPad.Controllers
                     {
                         if (drawingTool != EDrawingTool.FloodFill)
                         {
-                            DrawingBoardController.DrawLine(last_pointer_position, GetBrushPositionFromScreenPosition(eventData.position), (drawingTool == EDrawingTool.Pen) ? drawingToolColor : CanvasColor, brushSize);
+                            Color32 color = (drawingTool == EDrawingTool.Pen) ? drawingToolColor : CanvasColor;
+                            DrawingBoardController.DrawLine(last_pointer_position, GetBrushPositionFromScreenPosition(eventData.position), new ScribblersSharp.Color(color.r, color.g, color.b), brushSize);
                         }
                     }
                     else
@@ -258,10 +260,11 @@ namespace ScribblersPad.Controllers
             }
             if (ScribblersClientManager && (ScribblersClientManager.Lobby != null))
             {
-                minimalBrushSize = ScribblersClientManager.Lobby.MinimalBrushSize;
-                maximalBrushSize = ScribblersClientManager.Lobby.MaximalBrushSize;
+                ILobbyLimits lobby_limits = ScribblersClientManager.Lobby.Limits;
+                minimalBrushSize = lobby_limits.MinimalBrushSize;
+                maximalBrushSize = lobby_limits.MaximalBrushSize;
                 brushSize = Mathf.Clamp(brushSize, minimalBrushSize, maximalBrushSize);
-                CanvasColor = new Color32(ScribblersClientManager.Lobby.CanvasColor.R, ScribblersClientManager.Lobby.CanvasColor.G, ScribblersClientManager.Lobby.CanvasColor.B, ScribblersClientManager.Lobby.CanvasColor.A);
+                CanvasColor = new Color32(ScribblersClientManager.Lobby.CanvasColor.Red, ScribblersClientManager.Lobby.CanvasColor.Green, ScribblersClientManager.Lobby.CanvasColor.Blue, 0xFF);
             }
         }
 
@@ -272,7 +275,7 @@ namespace ScribblersPad.Controllers
         {
             if ((touchScreenKeyboard != null) && (touchScreenKeyboard.status == TouchScreenKeyboard.Status.Done))
             {
-                ScribblersClientManager.SendMessageGameMessageAsync(touchScreenKeyboard.text);
+                ScribblersClientManager.SendMessageGameMessage(touchScreenKeyboard.text);
                 touchScreenKeyboard = null;
             }
         }

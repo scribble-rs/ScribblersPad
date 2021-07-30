@@ -12,6 +12,7 @@ MonoImporter:
   - correctlyGuessedChatBoxElementAsset: {fileID: 4232035771713968090, guid: eedc859c4799fe343b34637575bc2226, type: 3}
   - ownCorrectlyGuessedChatBoxElementAsset: {fileID: 312101080469292611, guid: d42f5cd6d2494d04f82a48c483ad6a96, type: 3}
   - systemMessageChatBoxElementAsset: {fileID: 6471354768621618525, guid: 6cd64cc096b676149b2f0b19ba51d5c9, type: 3}
+  - chatPreviewMessageStringTranslation: {fileID: 11400000, guid: 1c70321a1650a354ba28f4b9b4eb187c, type: 2}
   - chatBoxElementParentRectangleTransform: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}

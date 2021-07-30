@@ -16,14 +16,14 @@ namespace ScribblersPad
         string ScribblersHost { get; set; }
 
         /// <summary>
-        /// User session ID
-        /// </summary>
-        string UserSessionID { get; set; }
-
-        /// <summary>
         /// Is using secure protocols
         /// </summary>
         bool IsUsingSecureProtocols { get; set; }
+
+        /// <summary>
+        /// Is allowed to use insecure protocols
+        /// </summary>
+        bool IsAllowedToUseInsecureProtocols { get; set; }
 
         /// <summary>
         /// Lobby ID
@@ -79,5 +79,39 @@ namespace ScribblersPad
         /// Is votekicking enabled
         /// </summary>
         bool IsVotekickingEnabled { get; set; }
+
+        /// <summary>
+        /// Gets user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <returns>User session ID</returns>
+        string GetUserSessionID(string host);
+
+        /// <summary>
+        /// TRies to get user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="userSessionID">User session ID</param>
+        /// <returns>"true" if user session ID is available, otherwise "false"</returns>
+        bool TryGetUserSessionID(string host, out string userSessionID);
+
+        /// <summary>
+        /// Sets an user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="userSessionID">User session ID</param>
+        void SetUserSessionID(string host, string userSessionID);
+
+        /// <summary>
+        /// Removes an user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <returns>"true" if successful, otherwise "false"</returns>
+        bool RemoveUserSessionID(string host);
+
+        /// <summary>
+        /// Clears user session IDs
+        /// </summary>
+        void ClearUserSessionIDs();
     }
 }

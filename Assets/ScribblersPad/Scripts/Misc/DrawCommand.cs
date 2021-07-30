@@ -1,4 +1,5 @@
 ﻿using ScribblersSharp;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -29,7 +30,7 @@ namespace ScribblersPad
         /// <summary>
         /// Color
         /// </summary>
-        public Color32 Color { get; }
+        public IColor Color { get; }
 
         /// <summary>
         /// Line width
@@ -44,12 +45,12 @@ namespace ScribblersPad
         /// <param name="to">To position</param>
         /// <param name="color">Color</param>
         /// <param name="lineWidth">Line width</param>
-        public DrawCommand(EDrawCommandType type, Vector2 from, Vector2 to, Color32 color, float lineWidth)
+        public DrawCommand(EDrawCommandType type, Vector2 from, Vector2 to, IColor color, float lineWidth)
         {
             Type = type;
             From = from;
             To = to;
-            Color = color;
+            Color = color ?? throw new ArgumentNullException(nameof(color));
             LineWidth = lineWidth;
         }
     }

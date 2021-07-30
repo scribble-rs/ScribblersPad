@@ -37,6 +37,12 @@ namespace ScribblersPad.Controllers
         private Toggle isUsingSecureProtocolsToggle = default;
 
         /// <summary>
+        /// Is allowed to use insecure protocols toggle
+        /// </summary>
+        [SerializeField]
+        private Toggle isAllowedToUseInsecureProtocolsToggle = default;
+
+        /// <summary>
         /// Gets invoked when listing lobbies has been requested
         /// </summary>
         [SerializeField]
@@ -53,6 +59,12 @@ namespace ScribblersPad.Controllers
         /// </summary>
         [SerializeField]
         private UnityEvent onListLobbyRequestFinished = default;
+
+        /// <summary>
+        /// Gets invoked when listing lobbies has been finished from an insecure source
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onInsecureListLobbyRequestFinished = default;
 
         /// <summary>
         /// Lobby view panel controllers
@@ -72,7 +84,7 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// List lobbies task
         /// </summary>
-        private Task<IEnumerable<ILobbyView>> listLobbiesTask;
+        private Task<ILobbyViews> listLobbiesTask;
 
         /// <summary>
         /// Lobby views
@@ -107,6 +119,15 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
+        /// Is allowed to use insecure protocols toggle
+        /// </summary>
+        public Toggle IsAllowedToUseInsecureProtocolsToggle
+        {
+            get => isAllowedToUseInsecureProtocolsToggle;
+            set => isAllowedToUseInsecureProtocolsToggle = value;
+        }
+
+        /// <summary>
         /// Gets invoked when listing lobbies has been requested
         /// </summary>
         public event ListLobbyRequestedDelegate OnListLobbyRequested;
@@ -122,6 +143,11 @@ namespace ScribblersPad.Controllers
         public event ListLobbyRequestFinishedDelegate OnListLobbyRequestFinished;
 
         /// <summary>
+        /// Gets invoked when listing lobbies has been finished from an insecure source
+        /// </summary>
+        public event InsecureListLobbyRequestFinishedDelegate OnInsecureListLobbyRequestFinished;
+
+        /// <summary>
         /// Enables Scribble.rs client
         /// </summary>
         private void EnableScribblersClient()
@@ -131,7 +157,7 @@ namespace ScribblersPad.Controllers
                 SaveGame<SaveGameData> save_game = SaveGames.Get<SaveGameData>();
                 if (save_game != null)
                 {
-                    scribblersClient = Clients.Create(save_game.Data.ScribblersHost, save_game.Data.UserSessionID, save_game.Data.IsUsingSecureProtocols);
+                    scribblersClient = Clients.Create(save_game.Data.ScribblersHost, save_game.Data.GetUserSessionID(save_game.Data.ScribblersHost), save_game.Data.IsUsingSecureProtocols, save_game.Data.IsAllowedToUseInsecureProtocols);
                 }
             }
         }
@@ -248,6 +274,23 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
+        /// Gets invoked when is allowed to use insecure protocols toggle value has been changed
+        /// </summary>
+        /// <param name="newValue">New value</param>
+        private void IsAllowedToUseInsecureProtocolsToggleValueChangedEvent(bool newValue)
+        {
+            SaveGame<SaveGameData> save_game = SaveGames.Get<SaveGameData>();
+            if (save_game != null)
+            {
+                DisableScribblersClient();
+                listLobbiesTask = null;
+                save_game.Data.IsAllowedToUseInsecureProtocols = newValue;
+                EnableScribblersClient();
+                ListLobbies();
+            }
+        }
+
+        /// <summary>
         /// Lists lobbies
         /// </summary>
         public void ListLobbies()
@@ -268,10 +311,12 @@ namespace ScribblersPad.Controllers
         /// </summary>
         public void ResetHostToDefault()
         {
-            if (hostInputField && isUsingSecureProtocolsToggle)
+            if (hostInputField && isUsingSecureProtocolsToggle && isAllowedToUseInsecureProtocolsToggle)
             {
                 hostInputField.SetTextWithoutNotify(ScribblersDefaultsObjectScript.defaultHost);
                 isUsingSecureProtocolsToggle.SetIsOnWithoutNotify(true);
+                isAllowedToUseInsecureProtocolsToggle.SetIsOnWithoutNotify(false);
+                isAllowedToUseInsecureProtocolsToggle.interactable = true;
                 SaveGame<SaveGameData> save_game = SaveGames.Get<SaveGameData>();
                 if (save_game != null)
                 {
@@ -310,6 +355,10 @@ namespace ScribblersPad.Controllers
             {
                 isUsingSecureProtocolsToggle.onValueChanged.AddListener(IsUsingSecureProtocolsToggleValueChangedEvent);
             }
+            if (isAllowedToUseInsecureProtocolsToggle)
+            {
+                isAllowedToUseInsecureProtocolsToggle.onValueChanged.AddListener(IsAllowedToUseInsecureProtocolsToggleValueChangedEvent);
+            }
         }
 
         /// <summary>
@@ -325,6 +374,10 @@ namespace ScribblersPad.Controllers
             if (isUsingSecureProtocolsToggle)
             {
                 isUsingSecureProtocolsToggle.onValueChanged.RemoveListener(IsUsingSecureProtocolsToggleValueChangedEvent);
+            }
+            if (isAllowedToUseInsecureProtocolsToggle)
+            {
+                isAllowedToUseInsecureProtocolsToggle.onValueChanged.RemoveListener(IsAllowedToUseInsecureProtocolsToggleValueChangedEvent);
             }
         }
 
@@ -356,6 +409,15 @@ namespace ScribblersPad.Controllers
                 {
                     Debug.LogError("Please assign an is using secure protocols toggle to this component.", this);
                 }
+                if (isAllowedToUseInsecureProtocolsToggle)
+                {
+                    isAllowedToUseInsecureProtocolsToggle.SetIsOnWithoutNotify(save_game.Data.IsAllowedToUseInsecureProtocols);
+                    isAllowedToUseInsecureProtocolsToggle.interactable = save_game.Data.IsUsingSecureProtocols;
+                }
+                else
+                {
+                    Debug.LogError("Please assign an is allowed to use insecure protocols toggle to this component.", this);
+                }
             }
             ListLobbies();
         }
@@ -379,7 +441,7 @@ namespace ScribblersPad.Controllers
                         OnListLobbyRequestFailed?.Invoke();
                         break;
                     case TaskStatus.RanToCompletion:
-                        IEnumerable<ILobbyView> lobby_views = listLobbiesTask.Result;
+                        ILobbyViews lobby_views = listLobbiesTask.Result;
                         if (lobby_views == null)
                         {
                             listLobbiesTask = null;
@@ -394,11 +456,22 @@ namespace ScribblersPad.Controllers
                             listLobbiesTask = null;
                             lobbyViews = lobby_views;
                             UpdateVisuals();
-                            if (onListLobbyRequestFinished != null)
+                            if (lobby_views.IsConnectionSecure)
                             {
-                                onListLobbyRequestFinished.Invoke();
+                                if (onListLobbyRequestFinished != null)
+                                {
+                                    onListLobbyRequestFinished.Invoke();
+                                }
+                                OnListLobbyRequestFinished?.Invoke(lobbyViews);
                             }
-                            OnListLobbyRequestFinished?.Invoke(lobbyViews);
+                            else
+                            {
+                                if (onInsecureListLobbyRequestFinished != null)
+                                {
+                                    onInsecureListLobbyRequestFinished.Invoke();
+                                }
+                                OnInsecureListLobbyRequestFinished?.Invoke(lobbyViews);
+                            }
                         }
                         break;
                 }

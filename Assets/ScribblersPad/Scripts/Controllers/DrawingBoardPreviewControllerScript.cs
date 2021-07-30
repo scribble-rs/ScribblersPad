@@ -51,7 +51,7 @@ namespace ScribblersPad.Controllers
             {
                 if (!DrawingBoardController.isActiveAndEnabled)
                 {
-                    DrawingBoardController.ProcessNextDrawCommandInQueue();
+                    DrawingBoardController.PerformUpdate();
                 }
                 if (DrawingBoardController.RawImage && RawImage)
                 {

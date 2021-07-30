@@ -69,7 +69,7 @@ namespace ScribblersPad.Controllers
         {
             if (roundText)
             {
-                roundText.text = string.Format(currentRoundStringTranslation ? currentRoundStringTranslation.ToString() : currentRoundStringFormat, lobby.Round, lobby.MaximalRounds);
+                roundText.text = string.Format(currentRoundStringTranslation ? currentRoundStringTranslation.ToString() : currentRoundStringFormat, lobby.CurrentRound, lobby.CurrentMaximalRoundCount);
             }
         }
 

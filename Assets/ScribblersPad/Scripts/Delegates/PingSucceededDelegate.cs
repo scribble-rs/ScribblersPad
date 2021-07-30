@@ -4,7 +4,7 @@
 namespace ScribblersPad
 {
     /// <summary>
-    /// Used to signal when pingin has been succeeded
+    /// Used to signal when pinging a host was succeessful
     /// </summary>
     /// <param name="pingTime">Ping time in seconds</param>
     public delegate void PingSucceededDelegate(float pingTime);

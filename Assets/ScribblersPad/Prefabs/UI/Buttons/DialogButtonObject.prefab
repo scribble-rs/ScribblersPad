@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 7635012271110813172}
   - component: {fileID: 8229298233366634811}
   - component: {fileID: 4556562514804578865}
-  - component: {fileID: 8868824735228185595}
+  - component: {fileID: 3733218037312871512}
+  - component: {fileID: 1506094852047043899}
   m_Layer: 5
   m_Name: DialogButtonObject
   m_TagString: Untagged
@@ -61,14 +62,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9254902, g: 0.8627451, b: 0.7529412, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 51288a5c4c83d394488280469e866ba1, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -121,20 +122,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8229298233366634811}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8868824735228185595}
-        m_TargetAssemblyTypeName: UnityDialog.ADialogButtonControllerScript, UnityDialog
-        m_MethodName: Click
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &8868824735228185595
+      m_Calls: []
+--- !u!114 &3733218037312871512
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,11 +132,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 4992202067186610725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbf12bdb6b624534baa4ce24fff140e5, type: 3}
+  m_Script: {fileID: 11500000, guid: ccc91ace6e4bb5d4589506b5ca468f89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 4556562514804578865}
-  buttonText: {fileID: 209510490680831889}
+  onDialogButtonTextUpdated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 209510490680831889}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!95 &1506094852047043899
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4992202067186610725}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 53f3b9d4a83d8234789416c5ae5c0bfe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5823361929253469419
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,15 +237,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 39f3df20d9e95c744bfcc1487539c705, type: 2}
+  m_sharedMaterial: {fileID: 1437953638357638159, guid: 39f3df20d9e95c744bfcc1487539c705, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4280232253
+  m_fontColor: {r: 0.23921569, g: 0.16078432, b: 0.12156863, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -240,7 +262,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 128.85
+  m_fontSize: 86.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1

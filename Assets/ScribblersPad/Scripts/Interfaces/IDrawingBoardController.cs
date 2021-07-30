@@ -13,11 +13,6 @@ namespace ScribblersPad
     public interface IDrawingBoardController : IScribblersClientController
     {
         /// <summary>
-        /// Minimal drawing frame time
-        /// </summary>
-        long MinimalDrawingFrameTime { get; set; }
-
-        /// <summary>
         /// Is my player allowed to drawing right now
         /// </summary>
         bool IsPlayerDrawing { get; }
@@ -84,14 +79,14 @@ namespace ScribblersPad
         /// <param name="to">Line end position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width</param>
-        void DrawLine(Vector2 from, Vector2 to, Color32 color, float lineWidth);
+        void DrawLine(Vector2 from, Vector2 to, ScribblersSharp.Color color, float lineWidth);
 
         /// <summary>
         /// Flood fills drawing board
         /// </summary>
         /// <param name="position">Flood fill posiiton</param>
         /// <param name="color">Flood fill color</param>
-        void Fill(Vector2 position, Color32 color);
+        void Fill(Vector2 position, ScribblersSharp.Color color);
 
         /// <summary>
         /// Clears drawing board
@@ -99,8 +94,8 @@ namespace ScribblersPad
         void Clear();
 
         /// <summary>
-        /// Processes next draw command in queue
+        /// Performs an update
         /// </summary>
-        void ProcessNextDrawCommandInQueue();
+        void PerformUpdate();
     }
 }

@@ -13,6 +13,7 @@ namespace ScribblersPad.Controllers
     /// <summary>
     /// A class that describes a game menu controller script
     /// </summary>
+    [RequireComponent(typeof(Animator))]
     public class GameMenuControllerScript : MonoBehaviour, IGameMenuController
     {
         /// <summary>
@@ -113,9 +114,9 @@ namespace ScribblersPad.Controllers
         /// </summary>
         public void RequestExitingGame()
         {
-            Dialog.Show((exitGameQuestionTitleStringTranslation == null) ? string.Empty : exitGameQuestionTitleStringTranslation.ToString(), (exitGameQuestionMessageStringTranslation == null) ? string.Empty : exitGameQuestionMessageStringTranslation.ToString(), EDialogType.Information, EDialogButtons.YesNo, (e) =>
+            Dialogs.Show(exitGameQuestionTitleStringTranslation ? exitGameQuestionTitleStringTranslation.ToString() : string.Empty, exitGameQuestionMessageStringTranslation ? exitGameQuestionMessageStringTranslation.ToString() : string.Empty, EDialogType.Information, EDialogButtons.YesNo, (dialogResponse, _) =>
             {
-                if (e.DialogResponse == EDialogResponse.Yes)
+                if (dialogResponse == EDialogResponse.Yes)
                 {
                     IsShowingGameMenu = false;
                     SceneLoaderManager.LoadScene("MainMenuScene");

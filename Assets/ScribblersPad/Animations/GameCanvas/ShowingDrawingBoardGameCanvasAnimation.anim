@@ -136,7 +136,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 108
+        value: 114
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -155,7 +155,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -216
+        value: -228
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -413,7 +413,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SizeDelta.x
-    path: BackgroundPanel/MenuButton
+    path: BackgroundPanel/GameMenuButton
     classID: 224
     script: {fileID: 0}
   m_PPtrCurves: []
@@ -565,7 +565,7 @@ AnimationClip:
       customType: 28
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 4103427344
+      path: 589678868
       attribute: 1967290853
       script: {fileID: 0}
       typeID: 224
@@ -712,7 +712,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 108
+        value: 114
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -731,7 +731,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -216
+        value: -228
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -989,7 +989,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SizeDelta.x
-    path: BackgroundPanel/MenuButton
+    path: BackgroundPanel/GameMenuButton
     classID: 224
     script: {fileID: 0}
   m_EulerEditorCurves: []

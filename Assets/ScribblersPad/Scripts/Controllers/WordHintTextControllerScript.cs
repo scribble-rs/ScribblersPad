@@ -20,13 +20,13 @@ namespace ScribblersPad.Controllers
         /// Default word color
         /// </summary>
         [SerializeField]
-        private Color defaultWordColor = Color.black;
+        private UnityEngine.Color defaultWordColor = UnityEngine.Color.black;
 
         /// <summary>
         /// Correctly guessed word color
         /// </summary>
         [SerializeField]
-        private Color correctlyGuessedWordColor = new Color(0.0f, 0.25f, 0.0f);
+        private UnityEngine.Color correctlyGuessedWordColor = new UnityEngine.Color(0.0f, 0.25f, 0.0f);
 
         /// <summary>
         /// Gets invoked when my player has guessed correctly
@@ -61,7 +61,7 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Default word color
         /// </summary>
-        public Color DefaultWordColor
+        public UnityEngine.Color DefaultWordColor
         {
             get => defaultWordColor;
             set => defaultWordColor = value;
@@ -70,7 +70,7 @@ namespace ScribblersPad.Controllers
         /// <summary>
         /// Correctly guessed word color
         /// </summary>
-        public Color CorrectlyGuessedWordColor
+        public UnityEngine.Color CorrectlyGuessedWordColor
         {
             get => correctlyGuessedWordColor;
             set => correctlyGuessedWordColor = value;
@@ -116,18 +116,9 @@ namespace ScribblersPad.Controllers
             if (WordText)
             {
                 StringBuilder word_string_builder = new StringBuilder();
-                bool is_first = true;
                 foreach (IWordHint word_hint in wordHints)
                 {
-                    if (is_first)
-                    {
-                        is_first = false;
-                    }
-                    else
-                    {
-                        word_string_builder.Append(' ');
-                    }
-                    word_string_builder.Append((word_hint.Character == '\0') ? "_" : $"<u>{ word_hint.Character }</u>");
+                    word_string_builder.Append((word_hint.Character == '\0') ? '_' : word_hint.Character);
                 }
                 WordText.text = word_string_builder.ToString();
                 word_string_builder.Clear();

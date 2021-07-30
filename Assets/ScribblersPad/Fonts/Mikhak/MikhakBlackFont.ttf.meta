@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 7de671a783e6bd343a9f1b65f08f4d62
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Mikhak
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 5b03a896377d0dc4498df9dc81049063, type: 3}
+  - {fileID: 12800000, guid: e486e96166edee84ca3c2ecd7a094abc, type: 3}
+  - {fileID: 12800000, guid: dc31b719b55bcd74481213ff80a83cd2, type: 3}
+  - {fileID: 12800000, guid: 2708f337b3aaec2489e0425da016425b, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

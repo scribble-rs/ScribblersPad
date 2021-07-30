@@ -1,6 +1,7 @@
 ﻿using ScribblersPad.Objects;
 using ScribblersSharp;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnitySaveGame;
 
@@ -22,16 +23,22 @@ namespace ScribblersPad.Data
         private string scribblersHost;
 
         /// <summary>
-        /// User session ID
+        /// User session IDs
         /// </summary>
         [SerializeField]
-        private string userSessionID;
+        private string[] userSessionIDs;
 
         /// <summary>
         /// Is using secure protocols
         /// </summary>
         [SerializeField]
         private bool isUsingSecureProtocols = true;
+
+        /// <summary>
+        /// Is allowed to use insecure protocols
+        /// </summary>
+        [SerializeField]
+        private bool isAllowedToUseInsecureProtocols = false;
 
         /// <summary>
         /// Lobby ID
@@ -99,6 +106,8 @@ namespace ScribblersPad.Data
         [SerializeField]
         private bool isVotekickingEnabled = true;
 
+        private Dictionary<string, string> userSessionIDLookup;
+
         /// <summary>
         /// Save game defaults
         /// </summary>
@@ -126,21 +135,21 @@ namespace ScribblersPad.Data
         }
 
         /// <summary>
-        /// User session ID
-        /// </summary>
-        public string UserSessionID
-        {
-            get => userSessionID ?? string.Empty;
-            set => userSessionID = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        /// <summary>
         /// Is using secure protocols
         /// </summary>
         public bool IsUsingSecureProtocols
         {
             get => isUsingSecureProtocols;
             set => isUsingSecureProtocols = value;
+        }
+
+        /// <summary>
+        /// Is allowed to use insecure protocols
+        /// </summary>
+        public bool IsAllowedToUseInsecureProtocols
+        {
+            get => isAllowedToUseInsecureProtocols;
+            set => isAllowedToUseInsecureProtocols = value;
         }
 
         /// <summary>
@@ -266,8 +275,9 @@ namespace ScribblersPad.Data
             if (saveGameData is SaveGameData save_game_data)
             {
                 scribblersHost = save_game_data.scribblersHost;
-                userSessionID = save_game_data.userSessionID;
+                userSessionIDs = (save_game_data.userSessionIDs == null) ? null : save_game_data.userSessionIDs.Clone() as string[];
                 isUsingSecureProtocols = save_game_data.isUsingSecureProtocols;
+                isAllowedToUseInsecureProtocols = save_game_data.isAllowedToUseInsecureProtocols;
                 lobbyID = save_game_data.lobbyID;
                 username = save_game_data.username;
                 lobbyLanguage = save_game_data.lobbyLanguage;
@@ -280,6 +290,143 @@ namespace ScribblersPad.Data
                 playersPerIPLimit = save_game_data.playersPerIPLimit;
                 isVotekickingEnabled = save_game_data.isVotekickingEnabled;
             }
+        }
+
+        private void InitializeUserSessionIDLookup()
+        {
+            if (userSessionIDLookup == null)
+            {
+                userSessionIDLookup = new Dictionary<string, string>();
+                if (userSessionIDs != null)
+                {
+                    foreach (string user_session_id in userSessionIDs)
+                    {
+                        if (string.IsNullOrWhiteSpace(user_session_id))
+                        {
+                            Debug.LogError($"Session ID entry is null.");
+                        }
+                        else
+                        {
+                            string[] user_session_id_strings = user_session_id.Split('=');
+                            if (user_session_id_strings.Length > 1)
+                            {
+                                string host = user_session_id_strings[0];
+                                if (userSessionIDLookup.ContainsKey(host))
+                                {
+                                    Debug.LogError($"Found duplicate user session ID for \"{ host }\" in save game.");
+                                }
+                                else
+                                {
+                                    userSessionIDLookup.Add(host, string.Join("=", user_session_id_strings, 1, user_session_id_strings.Length - 1));
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError($"\"{ user_session_id }\" is not a valid session ID entry.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates user session IDs
+        /// </summary>
+        private void UpdateUserSessionIDs()
+        {
+            if (userSessionIDs.Length != userSessionIDLookup.Count)
+            {
+                userSessionIDs = new string[userSessionIDLookup.Count];
+            }
+            int index = 0;
+            foreach (KeyValuePair<string, string> user_session_id_lookup_pair in userSessionIDLookup)
+            {
+                userSessionIDs[index] = $"{ user_session_id_lookup_pair.Key }={ user_session_id_lookup_pair.Value }";
+                ++index;
+            }
+        }
+
+        /// <summary>
+        /// Gets user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <returns>User session ID</returns>
+        public string GetUserSessionID(string host) => TryGetUserSessionID(host, out string ret) ? ret : string.Empty;
+
+        /// <summary>
+        /// TRies to get user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="userSessionID">User session ID</param>
+        /// <returns>"true" if user session ID is available, otherwise "false"</returns>
+        public bool TryGetUserSessionID(string host, out string userSessionID)
+        {
+            if (string.IsNullOrWhiteSpace(host))
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
+            InitializeUserSessionIDLookup();
+            bool ret = userSessionIDLookup.TryGetValue(host, out string result);
+            userSessionID = ret ? result : string.Empty;
+            return ret;
+        }
+
+        /// <summary>
+        /// Sets an user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="userSessionID">User session ID</param>
+        public void SetUserSessionID(string host, string userSessionID)
+        {
+            if (string.IsNullOrWhiteSpace(host))
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
+            if (userSessionID == null)
+            {
+                throw new ArgumentNullException(nameof(userSessionID));
+            }
+            InitializeUserSessionIDLookup();
+            if (userSessionIDLookup.ContainsKey(host))
+            {
+                userSessionIDLookup[host] = userSessionID;
+            }
+            else
+            {
+                userSessionIDLookup.Add(host, userSessionID);
+            }
+            UpdateUserSessionIDs();
+        }
+
+        /// <summary>
+        /// Removes an user session ID
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <returns>"true" if successful, otherwise "false"</returns>
+        public bool RemoveUserSessionID(string host)
+        {
+            if (string.IsNullOrWhiteSpace(host))
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
+            InitializeUserSessionIDLookup();
+            bool ret = userSessionIDLookup.Remove(host);
+            if (ret)
+            {
+                UpdateUserSessionIDs();
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// Clears user session IDs
+        /// </summary>
+        public void ClearUserSessionIDs()
+        {
+            InitializeUserSessionIDLookup();
+            userSessionIDLookup?.Clear();
+            userSessionIDs = Array.Empty<string>();
         }
     }
 }

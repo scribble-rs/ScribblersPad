@@ -8,7 +8,7 @@ namespace ScribblersPad.Managers
     /// <summary>
     /// An abstract class that describes a manager script
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Manager script type</typeparam>
     public abstract class AManagerScript<T> : MonoBehaviour, IManager where T : AManagerScript<T>
     {
         /// <summary>

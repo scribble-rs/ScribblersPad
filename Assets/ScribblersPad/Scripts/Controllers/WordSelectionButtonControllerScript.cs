@@ -56,7 +56,7 @@ namespace ScribblersPad.Controllers
         {
             if (ScribblersClientManager)
             {
-                ScribblersClientManager.SendChooseWordGameMessageAsync(Index);
+                ScribblersClientManager.SendChooseWordGameMessage(Index);
             }
             if (Parent)
             {

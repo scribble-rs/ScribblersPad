@@ -1,4 +1,5 @@
 ﻿using UnityTranslator.Objects;
+
 /// <summary>
 /// Scribble.rs Pad namespace
 /// </summary>

@@ -34,17 +34,18 @@ namespace ScribblersPad.Triggers
             ILobby lobby = ScribblersClientManager.Lobby;
             if (TryGetComponent(out Slider brush_size_slider))
             {
-                if (lobby.MinimalBrushSize > brush_size_slider.maxValue)
+                ILobbyLimits lobby_limits = lobby.Limits;
+                if (lobby_limits.MinimalBrushSize > brush_size_slider.maxValue)
                 {
-                    brush_size_slider.maxValue = lobby.MaximalBrushSize;
-                    brush_size_slider.minValue = lobby.MinimalBrushSize;
+                    brush_size_slider.maxValue = lobby_limits.MaximalBrushSize;
+                    brush_size_slider.minValue = lobby_limits.MinimalBrushSize;
                 }
                 else
                 {
-                    brush_size_slider.minValue = lobby.MinimalBrushSize;
-                    brush_size_slider.maxValue = lobby.MaximalBrushSize;
+                    brush_size_slider.minValue = lobby_limits.MinimalBrushSize;
+                    brush_size_slider.maxValue = lobby_limits.MaximalBrushSize;
                 }
-                brush_size_slider.value = lobby.MinimalBrushSize + ((lobby.MaximalBrushSize - lobby.MinimalBrushSize) / 4U);
+                brush_size_slider.value = lobby_limits.MinimalBrushSize + ((lobby_limits.MaximalBrushSize - lobby_limits.MinimalBrushSize) / 4U);
             }
             if (onReadyGameMessageReceived != null)
             {

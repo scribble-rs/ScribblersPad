@@ -35,44 +35,9 @@ namespace ScribblersPad
         string LobbyID { get; }
 
         /// <summary>
-        /// Minimal drawing time in seconds
+        /// Lobby limits
         /// </summary>
-        uint MinimalDrawingTime { get; }
-
-        /// <summary>
-        /// Maximal drawing time in seconds
-        /// </summary>
-        uint MaximalDrawingTime { get; }
-
-        /// <summary>
-        /// Minimal round count
-        /// </summary>
-        uint MinimalRoundCount { get; }
-
-        /// <summary>
-        /// Maximal round count
-        /// </summary>
-        uint MaximalRoundCount { get; }
-
-        /// <summary>
-        /// Minimal of maximal player count
-        /// </summary>
-        uint MinimalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Maximal of maximal player count
-        /// </summary>
-        uint MaximalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Minimal clients per IP count limit
-        /// </summary>
-        uint MinimalClientsPerIPLimit { get; }
-
-        /// <summary>
-        /// Maximal clients per IP count limit
-        /// </summary>
-        uint MaximalClientsPerIPLimit { get; }
+        ILobbyLimits Limits { get; }
 
         /// <summary>
         /// Maximal player count
@@ -82,7 +47,7 @@ namespace ScribblersPad
         /// <summary>
         /// Is lobby public
         /// </summary>
-        bool IsPublic { get; }
+        bool IsLobbyPublic { get; }
 
         /// <summary>
         /// Is votekicking enabled
@@ -95,9 +60,9 @@ namespace ScribblersPad
         uint CustomWordsChance { get; }
 
         /// <summary>
-        /// Clients per IP limit
+        /// Allowed clients per IP count
         /// </summary>
-        uint ClientsPerIPLimit { get; }
+        uint AllowedClientsPerIPCount { get; }
 
         /// <summary>
         /// Drawing board base width
@@ -108,16 +73,6 @@ namespace ScribblersPad
         /// Drawing board base height
         /// </summary>
         uint DrawingBoardBaseHeight { get; }
-
-        /// <summary>
-        /// Minimal brush size
-        /// </summary>
-        uint MinimalBrushSize { get; }
-
-        /// <summary>
-        /// Maximal brush size
-        /// </summary>
-        uint MaximalBrushSize { get; }
 
         /// <summary>
         /// Suggested brush sizes
@@ -147,12 +102,12 @@ namespace ScribblersPad
         /// <summary>
         /// Current round
         /// </summary>
-        uint Round { get; }
+        uint CurrentRound { get; }
 
         /// <summary>
-        /// Maximal amount of rounds
+        /// Current maximal round count
         /// </summary>
-        uint MaximalRounds { get; }
+        uint CurrentMaximalRoundCount { get; }
 
         /// <summary>
         /// Current drawing time in milliseconds
@@ -328,7 +283,7 @@ namespace ScribblersPad
         /// Lists all public lobbies asynchronously
         /// </summary>
         /// <returns>Lobby views task</returns>
-        Task<IEnumerable<ILobbyView>> ListLobbiesAsync();
+        Task<ILobbyViews> ListLobbiesAsync();
 
         /// <summary>
         /// Changes lobby rules asynchronously
@@ -348,8 +303,7 @@ namespace ScribblersPad
         /// <summary>
         /// Sends a "start-game" message asynchronously
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendStartGameMessageAsync();
+        void SendStartGameMessage();
 
         /// <summary>
         /// Sends a "line" game message asynchronously
@@ -360,8 +314,7 @@ namespace ScribblersPad
         /// <param name="toY">Y component of end line position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width in pixels</param>
-        /// <returns>Task</returns>
-        Task SendLineGameMessageAsync(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth);
+        void SendLineGameMessage(float fromX, float fromY, float toX, float toY, ScribblersSharp.Color color, float lineWidth);
 
         /// <summary>
         /// Sends a "fill" game message asynchronously
@@ -369,53 +322,45 @@ namespace ScribblersPad
         /// <param name="positionX">X component of fill start posiiton</param>
         /// <param name="positionY">Y component of fill start position</param>
         /// <param name="color"></param>
-        /// <returns>Task</returns>
-        Task SendFillGameMessageAsync(float positionX, float positionY, System.Drawing.Color color);
+        void SendFillGameMessage(float positionX, float positionY, ScribblersSharp.Color color);
 
         /// <summary>
         /// Sends a "clear-drawing-board" game message asynchronously
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendClearDrawingBoardGameMessageAsync();
+        void SendClearDrawingBoardGameMessage();
 
         /// <summary>
         /// Sends a "message" game message asynchronously
         /// </summary>
         /// <param name="content">Message content</param>
-        /// <returns>Task</returns>
-        Task SendMessageGameMessageAsync(string content);
+        void SendMessageGameMessage(string content);
 
         /// <summary>
         /// Sends a "choose-word" game message asynchronously
         /// </summary>
         /// <param name="index">Word index</param>
-        /// <returns>Task</returns>
-        Task SendChooseWordGameMessageAsync(uint index);
+        void SendChooseWordGameMessage(uint index);
 
         /// <summary>
         /// Sends a "name-change" game message asynchronously
         /// </summary>
         /// <param name="newUsername">New username</param>
-        /// <returns>Task</returns>
-        Task SendNameChangeGameMessageAsync(string newUsername);
+        void SendNameChangeGameMessage(string newUsername);
 
         /// <summary>
         /// Sends a "request-drawing" game message asynchronously
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendRequestDrawingGameMessageAsync();
+        void SendRequestDrawingGameMessage();
 
         /// <summary>
         /// Sends a "kick-vote" game message asynchronously
         /// </summary>
         /// <param name="toKickPlayer">To kick player</param>
-        /// <returns></returns>
-        Task SendKickVoteGameMessageAsync(IPlayer toKickPlayer);
+        void SendKickVoteGameMessage(IPlayer toKickPlayer);
 
         /// <summary>
         /// Sends a "keep-alive" game message asynchronously
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendKeepAliveGameMessageAsync();
+        void SendKeepAliveGameMessage();
     }
 }

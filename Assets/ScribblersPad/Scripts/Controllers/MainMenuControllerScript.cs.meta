@@ -3,7 +3,9 @@ guid: daf67eebe9b69a94b8353dccd1afda17
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - quitGameTitleStringTranslation: {fileID: 11400000, guid: 7c46d0ec67bb40840afa53bc756773c3, type: 2}
+  - quitGameMessageStringTranslation: {fileID: 11400000, guid: 7249b59ae70c8714e8807f12fa142200, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

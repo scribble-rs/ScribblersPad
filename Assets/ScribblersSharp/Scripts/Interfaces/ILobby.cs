@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Net.WebSockets;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Scribble.rs ♯ namespace
@@ -20,49 +18,19 @@ namespace ScribblersSharp
         WebSocketState WebSocketState { get; }
 
         /// <summary>
+        /// Is connection secure
+        /// </summary>
+        bool IsConnectionSecure { get; }
+
+        /// <summary>
         /// Lobby ID
         /// </summary>
         string LobbyID { get; }
 
         /// <summary>
-        /// Minimal drawing time in seconds
+        /// Lobby settings limits
         /// </summary>
-        uint MinimalDrawingTime { get; }
-
-        /// <summary>
-        /// Maximal drawing time in seconds
-        /// </summary>
-        uint MaximalDrawingTime { get; }
-
-        /// <summary>
-        /// Minimal round count
-        /// </summary>
-        uint MinimalRoundCount { get; }
-
-        /// <summary>
-        /// Maximal round count
-        /// </summary>
-        uint MaximalRoundCount { get; }
-
-        /// <summary>
-        /// Minimal of maximal player count
-        /// </summary>
-        uint MinimalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Maximal of maximal player count
-        /// </summary>
-        uint MaximalMaximalPlayerCount { get; }
-
-        /// <summary>
-        /// Minimal clients per IP count limit
-        /// </summary>
-        uint MinimalClientsPerIPLimit { get; }
-
-        /// <summary>
-        /// Maximal clients per IP count limit
-        /// </summary>
-        uint MaximalClientsPerIPLimit { get; }
+        ILobbyLimits Limits { get; }
 
         /// <summary>
         /// Maximal player count
@@ -72,7 +40,7 @@ namespace ScribblersSharp
         /// <summary>
         /// Is lobby public
         /// </summary>
-        bool IsPublic { get; }
+        bool IsLobbyPublic { get; }
 
         /// <summary>
         /// Is votekicking enabled
@@ -87,7 +55,7 @@ namespace ScribblersSharp
         /// <summary>
         /// Clients per IP limit
         /// </summary>
-        uint ClientsPerIPLimit { get; }
+        uint AllowedClientsPerIPCount { get; }
 
         /// <summary>
         /// Drawing board base width
@@ -100,16 +68,6 @@ namespace ScribblersSharp
         uint DrawingBoardBaseHeight { get; }
 
         /// <summary>
-        /// Minimal brush size
-        /// </summary>
-        uint MinimalBrushSize { get; }
-
-        /// <summary>
-        /// Maximal brush size
-        /// </summary>
-        uint MaximalBrushSize { get; }
-
-        /// <summary>
         /// Suggested brush sizes
         /// </summary>
         IEnumerable<uint> SuggestedBrushSizes { get; }
@@ -117,7 +75,7 @@ namespace ScribblersSharp
         /// <summary>
         /// Canvas color
         /// </summary>
-        Color CanvasColor { get; }
+        IColor CanvasColor { get; }
 
         /// <summary>
         /// My player
@@ -135,14 +93,14 @@ namespace ScribblersSharp
         IPlayer Owner { get; }
 
         /// <summary>
-        /// Round
+        /// Current round
         /// </summary>
-        uint Round { get; }
+        uint CurrentRound { get; }
 
         /// <summary>
-        /// Maximal rounds
+        /// Current maximal round count
         /// </summary>
-        uint MaximalRounds { get; }
+        uint CurrentMaximalRoundCount { get; }
 
         /// <summary>
         /// Current drawing time in milliseconds
@@ -287,13 +245,12 @@ namespace ScribblersSharp
         bool RemoveMessageParser<T>(IGameMessageParser<T> gameMessageParser) where T : IReceiveGameMessageData;
 
         /// <summary>
-        /// Sends a "start" game message asynchronously
+        /// Sends a "start" game message
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendStartGameMessageAsync();
+        void SendStartGameMessage();
 
         /// <summary>
-        /// Sends a "line" game message asynchronously
+        /// Sends a "line" game message
         /// </summary>
         /// <param name="fromX">Draw from X</param>
         /// <param name="fromY">Draw from Y</param>
@@ -301,63 +258,54 @@ namespace ScribblersSharp
         /// <param name="toY">Draw to Y</param>
         /// <param name="color">Draw color</param>
         /// <param name="lineWidth">Line width</param>
-        /// <returns>Task</returns>
-        Task SendLineGameMessageAsync(float fromX, float fromY, float toX, float toY, Color color, float lineWidth);
+        void SendLineGameMessage(float fromX, float fromY, float toX, float toY, IColor color, float lineWidth);
 
         /// <summary>
-        /// Sends a "fill" game message asynchronously
+        /// Sends a "fill" game message
         /// </summary>
         /// <param name="positionX"></param>
         /// <param name="positionY"></param>
         /// <param name="color"></param>
-        /// <returns>Task</returns>
-        Task SendFillGameMessageAsync(float positionX, float positionY, Color color);
+        void SendFillGameMessage(float positionX, float positionY, IColor color);
 
         /// <summary>
-        /// Sends a "clear-drawing-board" game message asynchronously
+        /// Sends a "clear-drawing-board" game message
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendClearDrawingBoardGameMessageAsync();
+        void SendClearDrawingBoardGameMessage();
 
         /// <summary>
         /// Sends a "message" game message asynchronously
         /// </summary>
         /// <param name="content">Content</param>
-        /// <returns>Task</returns>
-        Task SendMessageGameMessageAsync(string content);
+        void SendMessageGameMessage(string content);
 
         /// <summary>
         /// Sends a "choose-word" game message asynchronously
         /// </summary>
         /// <param name="index">Choose word index</param>
-        /// <returns>Task</returns>
-        Task SendChooseWordGameMessageAsync(uint index);
+        void SendChooseWordGameMessage(uint index);
 
         /// <summary>
         /// Sends a "name-change" game message asynchronously
         /// </summary>
         /// <param name="newUsername">New username</param>
-        /// <returns>Task</returns>
-        Task SendNameChangeGameMessageAsync(string newUsername);
+        void SendNameChangeGameMessage(string newUsername);
 
         /// <summary>
         /// Sends a "request-drawing" game message asynchronously
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendRequestDrawingGameMessageAsync();
+        void SendRequestDrawingGameMessage();
 
         /// <summary>
         /// Sends a "kick-vote" game message asynchronously
         /// </summary>
         /// <param name="toKickPlayer">To kick player</param>
-        /// <returns>Task</returns>
-        Task SendKickVoteGameMessageAsync(IPlayer toKickPlayer);
+        void SendKickVoteGameMessage(IPlayer toKickPlayer);
 
         /// <summary>
         /// Sends a "keep-alive" game message asynchronously
         /// </summary>
-        /// <returns>Task</returns>
-        Task SendKeepAliveGameMessageAsync();
+        void SendKeepAliveGameMessage();
 
         /// <summary>
         /// Processes events synchronously

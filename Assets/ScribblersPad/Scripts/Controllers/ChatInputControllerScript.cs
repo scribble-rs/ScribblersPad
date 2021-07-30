@@ -50,7 +50,7 @@ namespace ScribblersPad.Controllers
             if (chatInputField && !string.IsNullOrWhiteSpace(chatInputField.text))
             {
                 string input = chatInputField.text.Trim();
-                ScribblersClientManager.SendMessageGameMessageAsync(input);
+                ScribblersClientManager.SendMessageGameMessage(input);
                 chatInputField.text = string.Empty;
                 chatInputField.ActivateInputField();
             }

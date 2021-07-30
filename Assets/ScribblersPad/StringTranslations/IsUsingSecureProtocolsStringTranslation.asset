@@ -16,6 +16,6 @@ MonoBehaviour:
     strings:
     - stringValue: Is using secure protocols
       language: 10
-    - stringValue: Benutzt sichere Protokolle
+    - stringValue: Benutze sichere Protokolle
       language: 15
   comment: 

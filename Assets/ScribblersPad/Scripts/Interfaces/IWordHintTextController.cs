@@ -1,6 +1,5 @@
 ﻿using ScribblersSharp;
 using TMPro;
-using UnityEngine;
 
 /// <summary>
 /// Scribble.rs Pad namespace
@@ -15,12 +14,12 @@ namespace ScribblersPad
         /// <summary>
         /// Default word color
         /// </summary>
-        Color DefaultWordColor { get; set; }
+        UnityEngine.Color DefaultWordColor { get; set; }
 
         /// <summary>
         /// Correctly guessed word color
         /// </summary>
-        Color CorrectlyGuessedWordColor { get; set; }
+        UnityEngine.Color CorrectlyGuessedWordColor { get; set; }
 
         /// <summary>
         /// Word text

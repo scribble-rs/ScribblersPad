@@ -95,9 +95,19 @@ namespace ScribblersPad.Controllers
         }
 
         /// <summary>
-        /// Current time
+        /// Round start date and time
         /// </summary>
-        public float CurrentTime { get; private set; }
+        public DateTime RoundStartDateTime { get; private set; }
+
+        /// <summary>
+        /// Round start time in seconds
+        /// </summary>
+        public double RoundStartTime { get; private set; }
+
+        /// <summary>
+        /// Current time in seconds
+        /// </summary>
+        public double CurrentTime => Math.Max(RoundStartTime - (DateTime.UtcNow - RoundStartDateTime).TotalSeconds, 0.0);
 
         /// <summary>
         /// Gets invoked when a "ready" game message has been received
@@ -115,7 +125,8 @@ namespace ScribblersPad.Controllers
         /// <param name="lobby">Lobby</param>
         private void UpdateCurrentTime(ILobby lobby)
         {
-            CurrentTime = lobby.CurrentDrawingTime * 0.001f;
+            RoundStartDateTime = DateTime.UtcNow;
+            RoundStartTime = lobby.CurrentDrawingTime * 0.001;
             UpdateVisuals(lobby);
         }
 
@@ -125,14 +136,13 @@ namespace ScribblersPad.Controllers
         /// <param name="lobby">Lobby</param>
         private void UpdateVisuals(ILobby lobby)
         {
-            float value = CurrentTime / lobby.CurrentDrawingTime;
             if (currentTimeText)
             {
-                currentTimeText.text = string.Format(currentTimeInSecondsStringFormatStringTranslation ? currentTimeInSecondsStringFormatStringTranslation.ToString() : currentTimeInSecondsStringFormat, Mathf.RoundToInt(CurrentTime));
+                currentTimeText.text = string.Format(currentTimeInSecondsStringFormatStringTranslation ? currentTimeInSecondsStringFormatStringTranslation.ToString() : currentTimeInSecondsStringFormat, (int)Math.Round(CurrentTime));
             }
             if (timeProgressImage)
             {
-                timeProgressImage.fillAmount = value;
+                timeProgressImage.fillAmount = (float)(Math.Round(CurrentTime * 2.0) * 500.0 / lobby.CurrentDrawingTime);
             }
         }
 
@@ -207,7 +217,6 @@ namespace ScribblersPad.Controllers
                 {
                     if (lobby.GameState == EGameState.Ongoing)
                     {
-                        CurrentTime = Mathf.Max(CurrentTime - Time.deltaTime, 0.0f);
                         UpdateVisuals(lobby);
                     }
                 }

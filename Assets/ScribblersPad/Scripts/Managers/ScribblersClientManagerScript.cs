@@ -159,44 +159,9 @@ namespace ScribblersPad.Managers
         public string LobbyID => (Lobby == null) ? string.Empty : Lobby.LobbyID;
 
         /// <summary>
-        /// Minimal drawing time in seconds
+        /// Lobby limits
         /// </summary>
-        public uint MinimalDrawingTime => (Lobby == null) ? 0U : Lobby.MinimalDrawingTime;
-
-        /// <summary>
-        /// Maximal drawing time in seconds
-        /// </summary>
-        public uint MaximalDrawingTime => (Lobby == null) ? 0U : Lobby.MaximalDrawingTime;
-
-        /// <summary>
-        /// Minimal round count
-        /// </summary>
-        public uint MinimalRoundCount => (Lobby == null) ? 0U : Lobby.MinimalRoundCount;
-
-        /// <summary>
-        /// Maximal round count
-        /// </summary>
-        public uint MaximalRoundCount => (Lobby == null) ? 0U : Lobby.MaximalRoundCount;
-
-        /// <summary>
-        /// Minimal of maximal player count
-        /// </summary>
-        public uint MinimalMaximalPlayerCount => (Lobby == null) ? 0U : Lobby.MinimalMaximalPlayerCount;
-
-        /// <summary>
-        /// Maximal of maximal player count
-        /// </summary>
-        public uint MaximalMaximalPlayerCount => (Lobby == null) ? 0U : Lobby.MaximalMaximalPlayerCount;
-
-        /// <summary>
-        /// Minimal clients per IP count limit
-        /// </summary>
-        public uint MinimalClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.MinimalClientsPerIPLimit;
-
-        /// <summary>
-        /// Maximal clients per IP count limit
-        /// </summary>
-        public uint MaximalClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.MaximalClientsPerIPLimit;
+        public ILobbyLimits Limits => Lobby?.Limits;
 
         /// <summary>
         /// Maximal player count
@@ -206,7 +171,7 @@ namespace ScribblersPad.Managers
         /// <summary>
         /// Is lobby public
         /// </summary>
-        public bool IsPublic => (Lobby != null) && Lobby.IsPublic;
+        public bool IsLobbyPublic => (Lobby != null) && Lobby.IsLobbyPublic;
 
         /// <summary>
         /// Is votekicking enabled
@@ -219,9 +184,9 @@ namespace ScribblersPad.Managers
         public uint CustomWordsChance => (Lobby == null) ? 0U : Lobby.CustomWordsChance;
 
         /// <summary>
-        /// Clients per IP limit
+        /// Allowed clients per IP
         /// </summary>
-        public uint ClientsPerIPLimit => (Lobby == null) ? 0U : Lobby.ClientsPerIPLimit;
+        public uint AllowedClientsPerIPCount => (Lobby == null) ? 0U : Lobby.AllowedClientsPerIPCount;
 
         /// <summary>
         /// Drawing board base width
@@ -232,16 +197,6 @@ namespace ScribblersPad.Managers
         /// Drawing board base height
         /// </summary>
         public uint DrawingBoardBaseHeight => (Lobby == null) ? 0U : Lobby.DrawingBoardBaseHeight;
-
-        /// <summary>
-        /// Minimal brush size
-        /// </summary>
-        public uint MinimalBrushSize => (Lobby == null) ? 0U : Lobby.MinimalBrushSize;
-
-        /// <summary>
-        /// Maximal brush size
-        /// </summary>
-        public uint MaximalBrushSize => (Lobby == null) ? 0U : Lobby.MaximalBrushSize;
 
         /// <summary>
         /// Suggested brush sizes
@@ -271,12 +226,12 @@ namespace ScribblersPad.Managers
         /// <summary>
         /// Current round
         /// </summary>
-        public uint Round => (Lobby == null) ? 0U : Lobby.Round;
+        public uint CurrentRound => (Lobby == null) ? 0U : Lobby.CurrentRound;
 
         /// <summary>
-        /// Maximal amount of rounds
+        /// Current maximal round count
         /// </summary>
-        public uint MaximalRounds => (Lobby == null) ? 0U : Lobby.MaximalRounds;
+        public uint CurrentMaximalRoundCount => (Lobby == null) ? 0U : Lobby.CurrentMaximalRoundCount;
 
         /// <summary>
         /// Current drawing time in milliseconds
@@ -437,7 +392,7 @@ namespace ScribblersPad.Managers
         /// </summary>
         private void LobbyReadyGameMessageReceivedEvent()
         {
-            CanvasColor = new Color32(Lobby.CanvasColor.R, Lobby.CanvasColor.G, Lobby.CanvasColor.B, 0xFF);
+            CanvasColor = new Color32(Lobby.CanvasColor.Red, Lobby.CanvasColor.Green, Lobby.CanvasColor.Blue, 0xFF);
             if (onReadyGameMessageReceived != null)
             {
                 onReadyGameMessageReceived.Invoke();
@@ -545,7 +500,7 @@ namespace ScribblersPad.Managers
         /// <param name="toY">Y component of end line position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width</param>
-        private void LobbyLineGameMessageReceivedEvent(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth)
+        private void LobbyLineGameMessageReceivedEvent(float fromX, float fromY, float toX, float toY, IColor color, float lineWidth)
         {
             if (onLineGameMessageReceived != null)
             {
@@ -560,7 +515,7 @@ namespace ScribblersPad.Managers
         /// <param name="positionX">X component of fill position</param>
         /// <param name="positionY">Y component of fill position</param>
         /// <param name="color">Color</param>
-        private void LobbyFillGameMessageReceivedEvent(float positionX, float positionY, System.Drawing.Color color)
+        private void LobbyFillGameMessageReceivedEvent(float positionX, float positionY, IColor color)
         {
             if (onFillGameMessageReceived != null)
             {
@@ -686,7 +641,7 @@ namespace ScribblersPad.Managers
             if (save_game.Data != null)
             {
                 DestroyClient();
-                ScribblersClient = Clients.Create(save_game.Data.ScribblersHost, save_game.Data.UserSessionID, save_game.Data.IsUsingSecureProtocols);
+                ScribblersClient = Clients.Create(save_game.Data.ScribblersHost, save_game.Data.GetUserSessionID(save_game.Data.ScribblersHost), save_game.Data.IsUsingSecureProtocols, save_game.Data.IsAllowedToUseInsecureProtocols);
             }
         }
 
@@ -701,7 +656,7 @@ namespace ScribblersPad.Managers
                 SaveGame<SaveGameData> save_game = SaveGames.Get<SaveGameData>();
                 if (save_game != null)
                 {
-                    save_game.Data.UserSessionID = ScribblersClient.UserSessionID;
+                    save_game.Data.SetUserSessionID(ScribblersClient.Host, ScribblersClient.UserSessionID);
                     save_game.Save();
                 }
                 ScribblersClient.Dispose();
@@ -787,19 +742,19 @@ namespace ScribblersPad.Managers
         }
 
         /// <summary>
-        /// Gets server statistics asynchronously
+        /// Gets server statistics
         /// </summary>
         /// <returns>Server statistics task</returns>
         public Task<IServerStatistics> GetServerStatisticsAsync() => (ScribblersClient == null) ? Task.FromResult<IServerStatistics>(new ServerStatistics()) : ScribblersClient.GetServerStatisticsAsync();
 
         /// <summary>
-        /// Lists all public lobbies asynchronously
+        /// Lists all public lobbies
         /// </summary>
         /// <returns>Lobby views task</returns>
-        public Task<IEnumerable<ILobbyView>> ListLobbiesAsync() => (ScribblersClient == null) ? Task.FromResult<IEnumerable<ILobbyView>>(Array.Empty<ILobbyView>()) : ScribblersClient.ListLobbiesAsync();
+        public Task<ILobbyViews> ListLobbiesAsync() => (ScribblersClient == null) ? Task.FromResult<ILobbyViews>(null) : ScribblersClient.ListLobbiesAsync();
 
         /// <summary>
-        /// Changes lobby rules asynchronously
+        /// Changes lobby rules
         /// </summary>
         /// <param name="language">Language</param>
         /// <param name="isPublic">Is lobby public</param>
@@ -814,13 +769,12 @@ namespace ScribblersPad.Managers
         public Task ChangeLobbyRulesAsync(ELanguage? language = null, bool? isPublic = null, uint? maximalPlayerCount = null, ulong? drawingTime = null, uint? roundCount = null, IReadOnlyList<string> customWords = null, uint? customWordsChance = null, bool? isVotekickingEnabled = null, uint? clientsPerIPLimit = null) => (ScribblersClient == null) ? Task.CompletedTask : ScribblersClient.ChangeLobbyRulesAsync(language, isPublic, maximalPlayerCount, drawingTime, roundCount, customWords, customWordsChance, isVotekickingEnabled, clientsPerIPLimit);
 
         /// <summary>
-        /// Sends a "start-game" message asynchronously
+        /// Sends a "start-game" message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendStartGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendStartGameMessageAsync();
+        public void SendStartGameMessage() => Lobby?.SendStartGameMessage();
 
         /// <summary>
-        /// Sends a "line" game message asynchronously
+        /// Sends a "line" game message
         /// </summary>
         /// <param name="fromX">X component of start line position</param>
         /// <param name="fromY">Y component of start line position</param>
@@ -828,63 +782,54 @@ namespace ScribblersPad.Managers
         /// <param name="toY">Y component of end line position</param>
         /// <param name="color">Line color</param>
         /// <param name="lineWidth">Line width in pixels</param>
-        /// <returns>Task</returns>
-        public Task SendLineGameMessageAsync(float fromX, float fromY, float toX, float toY, System.Drawing.Color color, float lineWidth) => (Lobby == null) ? Task.CompletedTask : Lobby.SendLineGameMessageAsync(fromX, fromY, toX, toY, color, lineWidth);
+        public void SendLineGameMessage(float fromX, float fromY, float toX, float toY, ScribblersSharp.Color color, float lineWidth) => Lobby?.SendLineGameMessage(fromX, fromY, toX, toY, color, lineWidth);
 
         /// <summary>
-        /// Sends a "fill" game message asynchronously
+        /// Sends a "fill" game message
         /// </summary>
         /// <param name="positionX">X component of fill start posiiton</param>
         /// <param name="positionY">Y component of fill start position</param>
         /// <param name="color"></param>
-        /// <returns>Task</returns>
-        public Task SendFillGameMessageAsync(float positionX, float positionY, System.Drawing.Color color) => (Lobby == null) ? Task.CompletedTask : Lobby.SendFillGameMessageAsync(positionX, positionY, color);
+        public void SendFillGameMessage(float positionX, float positionY, ScribblersSharp.Color color) => Lobby?.SendFillGameMessage(positionX, positionY, color);
 
         /// <summary>
-        /// Sends a "clear-drawing-board" game message asynchronously
+        /// Sends a "clear-drawing-board" game message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendClearDrawingBoardGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendClearDrawingBoardGameMessageAsync();
+        public void SendClearDrawingBoardGameMessage() => Lobby?.SendClearDrawingBoardGameMessage();
 
         /// <summary>
-        /// Sends a "message" game message asynchronously
+        /// Sends a "message" game message
         /// </summary>
         /// <param name="content">Message content</param>
-        /// <returns>Task</returns>
-        public Task SendMessageGameMessageAsync(string content) => (Lobby == null) ? Task.CompletedTask : Lobby.SendMessageGameMessageAsync(content);
+        public void SendMessageGameMessage(string content) => Lobby?.SendMessageGameMessage(content);
 
         /// <summary>
-        /// Sends a "choose-word" game message asynchronously
+        /// Sends a "choose-word" game message
         /// </summary>
         /// <param name="index">Word index</param>
-        /// <returns>Task</returns>
-        public Task SendChooseWordGameMessageAsync(uint index) => (Lobby == null) ? Task.CompletedTask : Lobby.SendChooseWordGameMessageAsync(index);
+        public void SendChooseWordGameMessage(uint index) => Lobby?.SendChooseWordGameMessage(index);
 
         /// <summary>
-        /// Sends a "name-change" game message asynchronously
+        /// Sends a "name-change" game message
         /// </summary>
         /// <param name="newUsername">New username</param>
-        /// <returns>Task</returns>
-        public Task SendNameChangeGameMessageAsync(string newUsername) => (Lobby == null) ? Task.CompletedTask : Lobby.SendNameChangeGameMessageAsync(newUsername);
+        public void SendNameChangeGameMessage(string newUsername) => Lobby?.SendNameChangeGameMessage(newUsername);
 
         /// <summary>
-        /// Sends a "request-drawing" game message asynchronously
+        /// Sends a "request-drawing" game message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendRequestDrawingGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendRequestDrawingGameMessageAsync();
+        public void SendRequestDrawingGameMessage() => Lobby?.SendRequestDrawingGameMessage();
 
         /// <summary>
-        /// Sends a "kick-vote" game message asynchronously
+        /// Sends a "kick-vote" game message
         /// </summary>
         /// <param name="toKickPlayer">To kick player</param>
-        /// <returns></returns>
-        public Task SendKickVoteGameMessageAsync(IPlayer toKickPlayer) => (Lobby == null) ? Task.CompletedTask : Lobby.SendKickVoteGameMessageAsync(toKickPlayer);
+        public void SendKickVoteGameMessage(IPlayer toKickPlayer) => Lobby?.SendKickVoteGameMessage(toKickPlayer);
 
         /// <summary>
-        /// Sends a "keep-alive" game message asynchronously
+        /// Sends a "keep-alive" game message
         /// </summary>
-        /// <returns>Task</returns>
-        public Task SendKeepAliveGameMessageAsync() => (Lobby == null) ? Task.CompletedTask : Lobby.SendKeepAliveGameMessageAsync();
+        public void SendKeepAliveGameMessage() => Lobby?.SendKeepAliveGameMessage();
 
         /// <summary>
         /// Gets invoked when script gets enabled
